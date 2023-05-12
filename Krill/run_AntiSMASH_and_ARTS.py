@@ -1,6 +1,6 @@
 import subprocess, os, datetime
 
-def run(fasta_file,ext,db):
+def run(fasta_file, db):
     name=str(os.path.basename(fasta_file)).rsplit('.',1)[0]
     time=datetime.datetime.now().strftime('%Y-%m-%d %X')
 
@@ -88,9 +88,3 @@ def run(fasta_file,ext,db):
     #else:
     #  pass
     return int(os.stat(fasta_file).st_size/(10**6))
-
-
-
-
-
-#source ~/miniconda3/etc/profile.d/conda.sh && conda activate ARTS && python ~/miniconda3/envs/ARTS/arts/artspipeline1.py -org METAGENOME -khmms Krill/db/bacterial_metagenomic_resist_models.hmm -t E3 -rd /ssdRaid/iscsi_data/saulo/ellen/Deception_Island/ARTS/000000001 -cpu 1 /ssdRaid/iscsi_data/saulo/ellen/Deception_Island/AntiSMASH/000000001/000000001.gbk ~/miniconda3/envs/ARTS/arts/reference/metagenome/

@@ -13,9 +13,11 @@ from cprint import *
 from pandas import json_normalize
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+
 def prepare_extraction(path):
     directory = os.path.join(path,'AntiSMASH','AntiSMASH_Extractor/')
     os.makedirs(directory, exist_ok=True)
+
 
 def parse_gbk_cand_cluster(file):
 
@@ -71,13 +73,14 @@ def parse_gbk_cds(file):
 
 
 
-def protocluster_parse(path,threads):
+def protocluster_parse(path, threads):
 
     path = os.path.join(path,'AntiSMASH')
 
     directory=os.path.join(path,'AntiSMASH_Extractor/')
     
-    referencia = [x for x in list(pathlib.Path(path).glob("**/*.gbk")) if not 'region' in str(x)]
+    # Get list of gbk files (one for each fasta input file)
+    reference = [x for x in list(pathlib.Path(path).glob("**/*.gbk")) if not 'region' in str(x)]
     
     candclusters = []
     genes = []
@@ -85,26 +88,29 @@ def protocluster_parse(path,threads):
 
     print('Parsing genbank files...')
 
-    db = os.path.basename(path)
+    db = os.path.basename(path)  # Get database name
     
-    with tqdm(desc='{db} Region parse'.format(db=os.path.basename(db)),total=len(referencia),unit='gbk',colour='red',position=1,leave=False) as pbar:
+    # Display a visual progress bar for the region parse
+    with tqdm(desc='{db} Region parse'.format(db=os.path.basename(db)),total=len(reference),unit='gbk',colour='red',position=1,leave=False) as pbar:
+      # Use multiple threads for the execution of the gbk files
       with ThreadPoolExecutor(max_workers=threads) as executor:
-          result_futures = [executor.submit(parse_gbk_cand_cluster, file) for file in referencia]
+          # Parse gbk candidate clusters
+          result_futures = [executor.submit(parse_gbk_cand_cluster, file) for file in reference]
+
           for future in as_completed(result_futures):
             try:
               if future.result() != None:
+                # Add result to the candidate clusters list
                 candclusters = candclusters + future.result()
+              # Update progress bar
               pbar.update(1)
             except Exception as e:
               cprint.fatal(e,interrupt=False)
-    '''result_futures = [parse_gbk_cand_cluster(file) for file in referencia]
-    for future in result_futures:
-      if future !=[] and future != None:
-        candclusters = candclusters + future'''
 
-    with tqdm(desc='{db} CDS parse'.format(db=os.path.basename(db)),total=len(referencia),unit='gbk',colour='red',position=1,leave=False) as pbar:
+
+    with tqdm(desc='{db} CDS parse'.format(db=os.path.basename(db)),total=len(reference),unit='gbk',colour='red',position=1,leave=False) as pbar:
       with ThreadPoolExecutor(max_workers=threads) as executor:
-          result_futures = [executor.submit(parse_gbk_cds, file) for file in referencia]
+          result_futures = [executor.submit(parse_gbk_cds, file) for file in reference]
           for future in as_completed(result_futures):
             try:
               if future.result() != None:
@@ -112,11 +118,6 @@ def protocluster_parse(path,threads):
               pbar.update(1)
             except Exception as e:
               cprint.fatal(e,interrupt=False)
-    '''result_futures = [parse_gbk_cds(file) for file in referencia]
-    for future in result_futures:
-      if future !=[] and future != None:
-        genes = genes + future'''
-
 
 
     print('Building dataframe...')
@@ -263,37 +264,6 @@ def get_clusters_blast(path,threads):
                 except Exception as e:
                   cprint.fatal(e,interrupt=False)
        count+=1
-
-    '''count = 1
-    for function in functions:
-            if function == parse_blast_results_1:
-              result_futures = [parse_blast_results_1(file) for file in ref]
-            elif function == parse_blast_results_2:
-              result_futures = [parse_blast_results_2(file) for file in ref]
-            elif function == parse_blast_results_3:
-              result_futures = [parse_blast_results_3(file) for file in ref]
-            for future in result_futures:
-              if function == parse_blast_results_1:
-                try:
-                  recDf = recDf.append(future)
-                  
-                except Exception as e:
-                  cprint.fatal(e,interrupt=False)
-              elif function == parse_blast_results_2:
-                try:
-                  modDf = modDf.append(future)
-                
-                except Exception as e:
-                  cprint.fatal(e,interrupt=False)
-              elif function == parse_blast_results_3:
-                try:
-                  rkgDf = rkgDf.append(future)
-         
-                except Exception as e:
-                  cprint.fatal(e,interrupt=False)
-            count+=1'''
-
-
     
     rkgDf = rkgDf.rename(columns={"rkg_modules.antismash.modules.clusterblast.knowncluster.record_id": "record_id"})
     rkgDf = rkgDf.rename(columns={"rkg_modules.antismash.modules.clusterblast.knowncluster.results.region_number": "region_number"})

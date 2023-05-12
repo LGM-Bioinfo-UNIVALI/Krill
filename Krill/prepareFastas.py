@@ -3,6 +3,14 @@ from pathlib import Path
 import sys, os, subprocess
 from cprint import *
 
+
+def convert2fasta(path):
+	for item in Path(path).rglob('*'):
+		if os.path.isdir(item) is False:
+			base, ext = os.path.splitext(item)
+			os.rename(item, base + ".fasta")
+
+
 def run(path,ext):
 	cprint.ok('# Preparing input files and its metadata...')
 	os.chdir(path)
@@ -29,3 +37,8 @@ def run(path,ext):
 		cprint.info('# Changed metadata saved in {}'.format(os.path.join(path,'fastaFilesRenamed.tsv')))
 	else:
 		cprint.warn('Files already prepared.')
+
+
+if __name__ == '__main__':
+	path = sys.argv[1]
+	convert2fasta(path)
