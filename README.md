@@ -3,9 +3,6 @@
 ![krill](images/krill.png)
 
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
-![Downloads](https://img.shields.io/github/downloads/saulobritto/Krill/total?style=for-the-badge)
-![License](https://img.shields.io/github/license/saulobritto/Krill?style=for-the-badge)
-![Python](https://img.shields.io/github/pipenv/locked/python-version/saulobritto/Krill?style=for-the-badge)
 
 ## :mag_right: SUMMARY
 1. :scroll: ABOUT
