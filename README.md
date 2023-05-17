@@ -1,7 +1,5 @@
 # Krill
 
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
-
 ## :mag_right: SUMMARY
 1. :scroll: ABOUT
 2. :electric_plug: PRE-REQUISITES
@@ -61,12 +59,6 @@ run_antismash . . --version
 mkdir ARTSdocker && cd ARTSdocker && export ARTSPATH=$(pwd)
 wget -O docker-compose.yml https://bitbucket.org/ziemertlab/arts/raw/HEAD/docker-compose-arts.yml
 ```
-
-</p>
-</details>
-
-<details><summary>CREATING AntiSMASH ENV</summary>
-<p>
 
 </p>
 </details>
