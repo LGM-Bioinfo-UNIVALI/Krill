@@ -20,8 +20,7 @@
 1. Ubuntu 20.04
 2. Python 3.X
 3. Docker
-    - AntiSMASH 6.1.1
-    - ARTS 2.0
+4. hmmsearch
 
 ## :dvd: INSTALL
 
