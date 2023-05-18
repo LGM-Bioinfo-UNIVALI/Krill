@@ -12,7 +12,7 @@
 ## :electric_plug: PRE-REQUISITES
 1. Ubuntu 20.04
 2. Python 3.X
-3. Docker
+3. Docker or Conda
 4. hmmsearch
 
 ## :dvd: INSTALL
@@ -49,6 +49,18 @@ run_antismash . . --version
     
 </p>
 </details>
+
+<details><summary>INSTALLING AntiSMASH via Conda</summary>
+<p>
+    
+1. Install AntiSMASH using conda
+    
+```
+conda install -c bioconda antismash
+```
+
+</p>
+</details>
     
 <details><summary>INSTALLING ARTS via Docker</summary>
 <p>
@@ -63,7 +75,7 @@ wget -O docker-compose.yml https://bitbucket.org/ziemertlab/arts/raw/HEAD/docker
 </p>
 </details>
 
-<details><summary>INSTALLING ARTS via conda</summary>
+<details><summary>INSTALLING ARTS via Conda</summary>
 
 <p>
     
