@@ -145,7 +145,7 @@ Krill [OPTIONS] PATH
 ```
 
 ```
-usage: Krill [-h] [-noprep] [-x FASTA_EXTENSION] [-t THREADS] [--citation] PATH
+usage: Krill [-h] [-noprep] [-t THREADS] [--citation] PATH
 
 positional arguments:
   PATH                  Working path with fasta files
