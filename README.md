@@ -100,7 +100,7 @@ git clone https://bitbucket.org/ziemertlab/arts.git
 
 ## :woman_teacher: PREPARING YOUR FILES
 
-Krill works in a folder with different Projects MAGs (can be one folder from one project with its MAGs). So, basically it has to have a [specific folder organization](example/) to start the analysis:
+Krill works in a single folder with it's fasta files or in a folder with different Projects MAGs (multiple folders). For this second option, it has to have a [specific folder organization](example/) to start the analysis:
 
 > :warning: DO NOT USE SPACES IN FOLDERS AND FILES NAMES, IT CAN CAUSE ERRORS.
 
