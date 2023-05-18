@@ -63,6 +63,29 @@ wget -O docker-compose.yml https://bitbucket.org/ziemertlab/arts/raw/HEAD/docker
 </p>
 </details>
 
+<details><summary>INSTALLING ARTS via conda</summary>
+
+<p>
+    
+1. Download environment spec list file from this repository (spec-file.txt)
+    
+2. Create a conda environment for ARTS using the spec list file
+    
+```
+conda create -n "ARTS" --file /path/to/spec-file.txt
+```
+ 
+3. Download ARTS project into the conda environment using git:
+    
+```
+cd /path/to/ARTS/environment/
+git clone https://bitbucket.org/ziemertlab/arts.git
+```
+
+</p>
+    
+</details>
+
 ## :woman_teacher: PREPARING YOUR FILES
 
 Krill works in a folder with different Projects MAGs (can be one folder from one project with its MAGs). So, basically it has to have a [specific folder organization](example/) to start the analysis:
