@@ -75,7 +75,7 @@ wget -O docker-compose.yml https://bitbucket.org/ziemertlab/arts/raw/HEAD/docker
 conda create -n "ARTS" --file /path/to/spec-file.txt
 ```
  
-3. Download ARTS project into the conda environment using git:
+3. Download ARTS project into the conda environment using git
     
 ```
 cd /path/to/ARTS/environment/
