@@ -154,8 +154,6 @@ optional arguments:
   -h, --help            show this help message and exit
   -noprep, --do_not_prepare_fasta_files
                         Rename fasta files, its headers and store changes in a CSV file for control [DEFAULT: TRUE]
-  -x FASTA_EXTENSION, --fasta_extension FASTA_EXTENSION
-                        Fasta files extension [DEFAULT: fasta]
   -t THREADS, --threads THREADS
                         Trheads to use in analysis [DEFAULT: 16]
   --citation            Shows how to cite us
