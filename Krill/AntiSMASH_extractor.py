@@ -72,7 +72,6 @@ def parse_gbk_cds(file):
   return cds_list
 
 
-
 def protocluster_parse(path, threads):
 
     path = os.path.join(path,'AntiSMASH')
@@ -82,8 +81,8 @@ def protocluster_parse(path, threads):
     # Get list of gbk files (one for each fasta input file)
     reference = [x for x in list(pathlib.Path(path).glob("**/*.gbk")) if not 'region' in str(x)]
     
-    candclusters = []
-    genes = []
+    candclusters = []  # Candidate clusters
+    genes = [] 
     print('>>> CLUSTERS PARSE <<<\n')
 
     print('Parsing genbank files...')
@@ -108,21 +107,26 @@ def protocluster_parse(path, threads):
               cprint.fatal(e,interrupt=False)
 
 
+    # Display a visual progress bar for the coding sequences (CDS) parse
     with tqdm(desc='{db} CDS parse'.format(db=os.path.basename(db)),total=len(reference),unit='gbk',colour='red',position=1,leave=False) as pbar:
+      # Use multiple threads for the execution of the gbk files
       with ThreadPoolExecutor(max_workers=threads) as executor:
+          # Parse gbk coding sequences
           result_futures = [executor.submit(parse_gbk_cds, file) for file in reference]
           for future in as_completed(result_futures):
             try:
               if future.result() != None:
+                # Add result to the genes list
                 genes = genes + future.result()
+              # Update progress bar
               pbar.update(1)
             except Exception as e:
               cprint.fatal(e,interrupt=False)
 
-
+# ==============================================================================
+    # Merge candidate clusters and genes (coding sequences) into a dataframe
     print('Building dataframe...')
 
-    
     candclusters_df = pd.DataFrame(candclusters, columns=['file_name','contig','type', 'cluster_number', 'product', 'contig_edge', 'kind', 'protoclusters', 'SMILES', 'Start', 'End', 'polymer', 'strand'])
     candclusters_df.sort_values(by=['file_name','contig', 'cluster_number'], inplace=True)
     candclusters_df['genes'] = ''
@@ -138,6 +142,9 @@ def protocluster_parse(path, threads):
     print('Saving final dataframe into CSV...')
     
     candclusters_df.to_csv(directory+'clusters.tsv', sep='\t', index=False)
+# ==============================================================================
+
+
        
 def parse_blast_results_1(jfile):
 
@@ -218,7 +225,7 @@ def parse_blast_results_3(jfile):
                 pass
 
 
-def get_clusters_blast(path,threads):
+def get_clusters_blast(path, threads):
 
     path = os.path.join(path,'AntiSMASH')
 
@@ -227,7 +234,7 @@ def get_clusters_blast(path,threads):
         #legacy BLAST output format 9 file
     print('\n>>> CLUSTERS BLAST PARSE <<<\n')
 
-    # Data frames vazios
+    # Initialize dataframes
     recDf = pd.DataFrame()
     modDf = pd.DataFrame()
     rkgDf = pd.DataFrame()

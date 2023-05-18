@@ -18,7 +18,7 @@ cprint.ok('\nPlease cite us!\n')
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-noprep','--do_not_prepare_fasta_files',help='Rename fasta files, its headers and store changes in a CSV file for control [DEFAULT: TRUE]',action='store_true')
-parser.add_argument('-t','--threads',help='Trheads to use in analysis [DEFAULT: {}]'.format(default_threads),type=int,default=default_threads)
+parser.add_argument('-t','--threads',help='Threads to use in analysis [DEFAULT: {}]'.format(default_threads),type=int,default=default_threads)
 parser.add_argument('--citation',help='Shows how to cite us',action='store_true')
 parser.add_argument('PATH',help='Working path with fasta files',type=str)
 args = parser.parse_args()
@@ -75,7 +75,7 @@ with tqdm(desc='Total Databases Analysis progress in MB',total=total_size,unit='
       AntiSMASH_extractor.prepare_extraction(db)  # Create a folder for the AntiSMASH extraction
       ARTS_extractor.prepare_extraction(db) # Create a folder for the ARTS extraction
       
-      AntiSMASH_extractor.protocluster_parse(db, args.threads)
+      AntiSMASH_extractor.protocluster_parse(db, args.threads)  # Parse candidate clusters and coding sequences. output: clusters.tsv
       AntiSMASH_extractor.get_clusters_blast(db, args.threads)
       
       ARTS_extractor.ARTS_overview(db)
