@@ -4,8 +4,8 @@
 1. :scroll: ABOUT
 2. :electric_plug: PRE-REQUISITES
 3. :dvd: INSTALL
-4. :woman_technologist: USING
-5. :woman_teacher: PREPARING YOUR FILES
+4. :woman_teacher: PREPARING YOUR FILES
+5. :woman_technologist: USING
 
 ## :scroll: ABOUT
 
