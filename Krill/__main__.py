@@ -93,4 +93,4 @@ with tqdm(desc='Total Databases Analysis progress in MB',total=total_size,unit='
 cprint.info('# Getting metainfo (Databases MBases, ORFs, BGCs/Mbases and BGCs/ORFs)...')
 get_dbs_metainfo.get(args.PATH, "fasta")
 
-cprint.ok('\nAll done. Any questions please contact: saulobdasilva@gmail.com\nCheers!')
+cprint.ok('\nAll done. Any questions please contact: saulobdasilva@gmail.com or ellen.junker@edu.univali.br\nCheers!')

@@ -8,7 +8,7 @@ def convert2fasta(path):
 	for item in Path(path).rglob('*'):
 		if os.path.isdir(item) is False:
 			base, ext = os.path.splitext(item)
-			if ext in ['fa', 'fna', 'fas', 'ffn', 'faa', 'frn']:
+			if ext in ['.fa', '.fna', '.fas', '.ffn', '.faa', '.frn']:
 				os.rename(item, base + ".fasta")
 
 
