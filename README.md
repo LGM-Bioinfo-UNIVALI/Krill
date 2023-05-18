@@ -3,7 +3,7 @@
 ## :mag_right: SUMMARY
 1. :scroll: ABOUT
 2. :electric_plug: PRE-REQUISITES
-3. :dvd: INSTALL
+3. :dvd: INSTALLATION
 4. :woman_teacher: PREPARING YOUR FILES
 5. :woman_technologist: USING
 
