@@ -11,19 +11,18 @@
 <p>
 Krill is a tool designed to aid in the analysis of genomic data with a focus on biosynthetic gene clusters (BGCs).
 </p>
-<p>
 Features:
--Data pre-processing for contigs extraction;
--Extraction of biosynthetic gene clusters (BGCs);
--Annotation of resistance genes;
--Similarity analysis and annotation of biosynthetic families;
--Curation of prospected clusters.
+1. Data pre-processing for contigs extraction;
+2. Extraction of biosynthetic gene clusters (BGCs);
+3. Annotation of resistance genes;
+4. Similarity analysis and annotation of biosynthetic families;
+5. Curation of prospected clusters.
 
 ## :electric_plug: PRE-REQUISITES
 1. Ubuntu 20.04
 2. Python 3.X
 3. Conda
-5. hmmsearch
+4. hmmsearch
 
 ## :dvd: INSTALL
 
