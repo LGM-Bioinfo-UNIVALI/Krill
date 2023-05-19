@@ -61,19 +61,6 @@ conda install -c bioconda antismash
 
 </p>
 </details>
-    
-<details><summary>INSTALLING ARTS via Docker</summary>
-<p>
-    
-1. Choose a folder to ARTS Docker Compose to be and download it
-    
-```
-mkdir ARTSdocker && cd ARTSdocker && export ARTSPATH=$(pwd)
-wget -O docker-compose.yml https://bitbucket.org/ziemertlab/arts/raw/HEAD/docker-compose-arts.yml
-```
-
-</p>
-</details>
 
 <details><summary>INSTALLING ARTS via Conda</summary>
 
