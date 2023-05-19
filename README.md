@@ -12,8 +12,8 @@
 ## :electric_plug: PRE-REQUISITES
 1. Ubuntu 20.04
 2. Python 3.X
-3. Docker or Conda
-4. hmmsearch
+3. Conda
+5. hmmsearch
 
 ## :dvd: INSTALL
 
