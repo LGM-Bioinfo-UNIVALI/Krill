@@ -9,10 +9,19 @@
 
 ## :scroll: ABOUT
 
+Krill is a tool designed to aid in the analysis of genomic data with a focus on biosynthetic gene clusters (BGCs).
+
+Features:
+1. Data pre-processing for contigs extraction; 
+2. Extraction of biosynthetic gene clusters (BGCs); 
+3. Annotation of resistance genes; 
+4. Similarity analysis and annotation of biosynthetic families; 
+5. Curation of prospected clusters. 
+
 ## :electric_plug: PRE-REQUISITES
 1. Ubuntu 20.04
 2. Python 3.X
-3. Docker or Conda
+3. Conda
 4. hmmsearch
 
 ## :dvd: INSTALL
@@ -57,19 +66,6 @@ run_antismash . . --version
     
 ```
 conda install -c bioconda antismash
-```
-
-</p>
-</details>
-    
-<details><summary>INSTALLING ARTS via Docker</summary>
-<p>
-    
-1. Choose a folder to ARTS Docker Compose to be and download it
-    
-```
-mkdir ARTSdocker && cd ARTSdocker && export ARTSPATH=$(pwd)
-wget -O docker-compose.yml https://bitbucket.org/ziemertlab/arts/raw/HEAD/docker-compose-arts.yml
 ```
 
 </p>
