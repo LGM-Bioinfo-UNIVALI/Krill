@@ -11,7 +11,8 @@ import sys, os, ast
 from statistics import mean
 
 def run(path):
-    KnownHits = pd.read_csv(os.path.join(path,'ARTS','ARTS_Extractor','KnownHits.tsv'),sep='\t',converters={'Sample':str})
+    if os.path.exists(os.path.join(path,'ARTS','ARTS_Extractor','KnownHits.tsv')):
+        KnownHits = pd.read_csv(os.path.join(path,'ARTS','ARTS_Extractor','KnownHits.tsv'),sep='\t',converters={'Sample':str})
     CoreHits = pd.read_csv(os.path.join(path,'ARTS','ARTS_Extractor','CoreHits.tsv'),sep='\t',converters={'Sample':str})
     DupHits = pd.read_csv(os.path.join(path,'ARTS','ARTS_Extractor','DupHits.tsv'),sep='\t',converters={'Sample':str})
     
@@ -28,14 +29,15 @@ def run(path):
         start = int(clusters.loc[i,'Start'])
         end = int(clusters.loc[i,'End'])
         
-        tmp = KnownHits[(KnownHits['Contig'] == bgc) & (KnownHits['HitStart'].astype(int) >= start) & (KnownHits['HitEnd'].astype(int) <= end)]
-        if not tmp.empty:
-            row_list = []
-            for row in tmp.itertuples():
-                row_list.append(['KnownResistenceHit',row.Model,row.Description,row.evalue,row.HitStart,row.HitEnd,row.HitStrand])
-            hit_selected.loc[((hit_selected.index == bgc) & (hit_selected.Start >= start) & (hit_selected.End <= end)),'KnownResistenceHit'] = str(row_list)
-        else:
-            hit_selected.loc[((hit_selected.index == bgc) & (hit_selected.Start >= start) & (hit_selected.End <= end)),'KnownResistenceHit'] = 'N/A'
+        if os.path.exists(os.path.join(path,'ARTS','ARTS_Extractor','KnownHits.tsv')):
+            tmp = KnownHits[(KnownHits['Contig'] == bgc) & (KnownHits['HitStart'].astype(int) >= start) & (KnownHits['HitEnd'].astype(int) <= end)]
+            if not tmp.empty:
+                row_list = []
+                for row in tmp.itertuples():
+                    row_list.append(['KnownResistenceHit',row.Model,row.Description,row.evalue,row.HitStart,row.HitEnd,row.HitStrand])
+                hit_selected.loc[((hit_selected.index == bgc) & (hit_selected.Start >= start) & (hit_selected.End <= end)),'KnownResistenceHit'] = str(row_list)
+            else:
+                hit_selected.loc[((hit_selected.index == bgc) & (hit_selected.Start >= start) & (hit_selected.End <= end)),'KnownResistenceHit'] = 'N/A'
         
         tmp_blast = clusters_blast[(clusters_blast['contig'] == bgc) & (clusters_blast['cluster'] == cluster_number)]
         if not tmp_blast.empty:

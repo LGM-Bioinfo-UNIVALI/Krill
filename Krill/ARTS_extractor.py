@@ -7,6 +7,7 @@ Created on Fri Feb 26 08:14:02 2021
 """
 import pathlib, os, sys, csv, glob
 import pandas as pd
+import numpy as np
 from Bio import SeqIO
 from functools import reduce
 import numpy as np
@@ -115,6 +116,7 @@ def readTSVKnownHits(tsv):
     df['HitEnd'] = df['Sequence description'].str.split('|').str[6].str.split('_').str[1]
     df['HitStrand'] = df['Sequence description'].str.split('|').str[6].str.split('_').str[2]
     df.drop(columns=['Sequence description'],inplace=True)
+   
     return df
     
 def readTSVCoreHits(tsv):
@@ -141,12 +143,24 @@ def ARTS_Results_Extraction(path):
     os.chdir(path)
     directory=os.path.join(path,'ARTS_Extractor/')
 
+    number_of_samples = 0
+    for item in os.listdir(path):
+        if os.path.isdir(item) and 'ARTS_Extractor' not in item:
+            number_of_samples += 1
+
     print('>>> CORE GENES INFORMATION <<<\n')
     print('Getting Core Genes info...\n')
 
-    knownResistenceHits = pd.concat(map(readTSVKnownHits, glob.glob('**/**/knownhits.tsv')))
-    knownResistenceHits.to_csv(os.path.join(directory,'KnownHits.tsv'),sep='\t',index=False)
+    # knownResistenceHits = None
+    if glob.glob('**/**/knownhits.tsv') != []:
+        knownResistenceHits = pd.concat(map(readTSVKnownHits, glob.glob('**/**/knownhits.tsv')))
+        knownResistenceHits.to_csv(os.path.join(directory,'KnownHits.tsv'),sep='\t',index=False)
+
+    # else:
+    #     print(number_of_samples)
+    #     knownResistenceHits = pd.DataFrame(np.nan, index=[i for i in range(0, number_of_samples)], columns=['Model', 'Description', 'Sequence', 'id', 'evalue' , 'bitscore', 'Sample', 'Contig', 'Contig', 'HitStart', 'HitEnd', 'HitStrand'])
     
+
     CoreHits = pd.concat(map(readTSVCoreHits, glob.glob('**/**/coretable.tsv')))
     CoreHits.to_csv(os.path.join(directory,'CoreHits.tsv'),sep='\t',index=False)
     
