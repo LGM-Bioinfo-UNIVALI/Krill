@@ -11,7 +11,9 @@
 
 Krill is a tool designed to aid in the analysis of genomic data with a focus on biosynthetic gene clusters (BGCs).
 
-Features:
+The package was developed with financial support from the Foundation for Research and Innovation Support of the State of Santa Catarina (FAPESC, process 2020TR1448) and the São Paulo Research Foundation (FAPESP, process 2019/27306-9), as well as the Brazilian National Institute of Science and Technology - INCT-Mar COI (CNPq, Process 400551/2014–4). We also wish to thank the Coordination for the Improvement of Higher Education (CAPES) for the scholarships provided to H.N. (88887.146746/2017–00). A.O.S.L. was further supported by CNPq (312363/2018–4). D.B.B.T. and P.B. also acknowledge funding from the Serrapilheira Institute (Serra-1709–19681 and associated fellowship ref. 3659).
+
+Package Features:
 1. Data pre-processing for contigs extraction; 
 2. Extraction of biosynthetic gene clusters (BGCs); 
 3. Annotation of resistance genes; 
