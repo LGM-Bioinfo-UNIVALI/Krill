@@ -153,6 +153,14 @@ optional arguments:
   -noprep, --do_not_prepare_fasta_files
                         Rename fasta files, its headers and store changes in a CSV file for control [DEFAULT: TRUE]
   -t THREADS, --threads THREADS
-                        Trheads to use in analysis [DEFAULT: 16]
+                        Threads to use in analysis [DEFAULT: 16]
   --citation            Shows how to cite us
 ```
+
+## :woman_technologist: :man_technologist: Contributors 
+<table>
+    <tr>
+        <td align="left" valign="top" width="14.28%"><a href="https://github.com/saulobritto"><img src="https://avatars.githubusercontent.com/u/50638088?v=4" width="100px;" alt="Saulo Britto"/><br />Saulo Britto</a></td>
+        <td align="left" valign="top" width="14.28%"><a href="https://github.com/ellenjkr"><img src="https://avatars.githubusercontent.com/u/49100458?v=4" width="100px;" alt="Ellen Junker"/><br />Ellen Junker</a></td>
+    </tr>
+</table>
