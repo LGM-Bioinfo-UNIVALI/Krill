@@ -16,8 +16,11 @@ def run(fasta_file, db):
     
     #ARTS
     if not os.path.isdir(os.path.join(db,'ARTS',name)):
-        hmm_ref=os.path.join(os.path.dirname(__file__),'db','formate_releasing_enzymes_HMMs')
-        # hmm_ref=os.path.join(os.path.dirname(__file__),'db','bacterial_metagenomic_resist_models.hmm')
+        # hmm_ref=os.path.join(os.path.dirname(__file__),'db','novos_hmm')
+        # hmm_ref=os.path.join(os.path.dirname(__file__),'db','novos_hmm/arylformamidase_new.hmm')
+        # hmm_ref=os.path.join(os.path.dirname(__file__),'db','tryptophanDioxygen_blast.hmm')
+        # hmm_ref=os.path.join(os.path.dirname(__file__),'db','formate_releasing_enzymes_HMMs')
+        hmm_ref=os.path.join(os.path.dirname(__file__),'db','bacterial_metagenomic_resist_models.hmm')
         res_dir=os.path.join(db,'ARTS',name)
         os.makedirs(res_dir,exist_ok=True)
   

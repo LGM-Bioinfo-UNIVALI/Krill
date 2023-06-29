@@ -10,6 +10,22 @@ import pandas as pd
 import sys, os, ast
 from statistics import mean
 
+
+def df2xlsx(path, sheet_name, df):
+    df = df.copy().reset_index()
+    writer = pd.ExcelWriter(path, engine='xlsxwriter')
+
+    df.to_excel(writer, sheet_name=sheet_name, startrow=1, header=False, index=False)
+    worksheet = writer.sheets[sheet_name]
+
+    (max_row, max_col) = df.shape
+    column_settings = [{'header': column} for column in df.columns]
+    worksheet.add_table(0, 0, max_row, max_col - 1, {'columns': column_settings})
+    worksheet.set_column(0, max_col - 1, 15)
+
+    writer._save()
+
+
 def run(path):
     if os.path.exists(os.path.join(path,'ARTS','ARTS_Extractor','KnownHits.tsv')):
         KnownHits = pd.read_csv(os.path.join(path,'ARTS','ARTS_Extractor','KnownHits.tsv'),sep='\t',converters={'Sample':str})
@@ -78,10 +94,12 @@ def run(path):
     hit_selected['regulatory_genes'] = hit_selected['genes'].str.contains('regulatory',case=False)
     hit_selected = hit_selected[['sample','cluster_number', 'product', 'completeness', 'SMILES', 'Start', 'End', 'Size', 'strand', 'genes', 'regulatory_genes','KnownResistenceHit','CoreHit','BGCs_Hits','BGCs_Hits_Mean_Similarities(%)']]
 
-    hit_selected.to_csv(os.path.join(path,'BGCs_with_Hits.tsv'),sep='\t')
+    # hit_selected.to_csv(os.path.join(path,'BGCs_with_Hits.tsv'),sep='\t')
+    df2xlsx(os.path.join(path,'BGCs_with_Hits.xlsx'), 'BGCs with Hits', hit_selected)
 
     hit_selected = hit_selected[hit_selected['completeness'] == "Complete"]
-    hit_selected.to_csv(os.path.join(path,'Complete_BGCs_with_Hits.tsv'),sep='\t')
+    # hit_selected.to_csv(os.path.join(path,'Complete_BGCs_with_Hits.tsv'),sep='\t')
+    df2xlsx(os.path.join(path,'Complete_BGCs_with_Hits.xlsx'), 'Complete BGCs with Hits', hit_selected)
 
 if __name__ == '__main__':
     run(os.getcwd())
