@@ -11,7 +11,9 @@
 
 Krill is a tool designed to aid in the analysis of genomic data with a focus on biosynthetic gene clusters (BGCs).
 
-Features:
+<p align="justify">The package was developed with financial support from the Foundation for Research and Innovation Support of the State of Santa Catarina (FAPESC, process 2020TR1448) and the São Paulo Research Foundation (FAPESP, process 2019/27306-9), as well as the Brazilian National Institute of Science and Technology - INCT-Mar COI (CNPq, Process 400551/2014–4). We also wish to thank the Coordination for the Improvement of Higher Education (CAPES) for the scholarships provided to H.N. (88887.146746/2017–00). A.O.S.L. was further supported by CNPq (312363/2018–4). D.B.B.T. and P.B. also acknowledge funding from the Serrapilheira Institute (Serra-1709–19681 and associated fellowship ref. 3659).</p>
+
+Package Features:
 1. Data pre-processing for contigs extraction; 
 2. Extraction of biosynthetic gene clusters (BGCs); 
 3. Annotation of resistance genes; 
@@ -151,6 +153,14 @@ optional arguments:
   -noprep, --do_not_prepare_fasta_files
                         Rename fasta files, its headers and store changes in a CSV file for control [DEFAULT: TRUE]
   -t THREADS, --threads THREADS
-                        Trheads to use in analysis [DEFAULT: 16]
+                        Threads to use in analysis [DEFAULT: 16]
   --citation            Shows how to cite us
 ```
+
+## :woman_technologist: :man_technologist: Contributors 
+<table>
+    <tr>
+        <td align="left" valign="top" width="14.28%"><a href="https://github.com/saulobritto"><img src="https://avatars.githubusercontent.com/u/50638088?v=4" width="100px;" alt="Saulo Britto"/><br />Saulo Britto</a></td>
+        <td align="left" valign="top" width="14.28%"><a href="https://github.com/ellenjkr"><img src="https://avatars.githubusercontent.com/u/49100458?v=4" width="100px;" alt="Ellen Junker"/><br />Ellen Junker</a></td>
+    </tr>
+</table>
