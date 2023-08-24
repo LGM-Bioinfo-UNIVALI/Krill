@@ -32,7 +32,10 @@ def run(path):
     CoreHits = pd.read_csv(os.path.join(path,'ARTS','ARTS_Extractor','CoreHits.tsv'),sep='\t',converters={'Sample':str})
     DupHits = pd.read_csv(os.path.join(path,'ARTS','ARTS_Extractor','DupHits.tsv'),sep='\t',converters={'Sample':str})
     
-    clusters_blast = pd.read_csv(os.path.join(path,'AntiSMASH','AntiSMASH_Extractor','clusters_blast.tsv'),sep='\t')
+    try:
+        clusters_blast = pd.read_csv(os.path.join(path,'AntiSMASH','AntiSMASH_Extractor','clusters_blast.tsv'),sep='\t')
+    except pd.errors.EmptyDataError:
+        clusters_blast = pd.DataFrame()
     clusters = pd.read_csv(os.path.join(path,'AntiSMASH','AntiSMASH_Extractor','clusters.tsv'),sep='\t',converters={'file_name':str})
 
     hit_selected = clusters[['file_name','contig','cluster_number','product','contig_edge','SMILES','Start','End','strand','genes']].set_index('contig')
@@ -55,7 +58,11 @@ def run(path):
             else:
                 hit_selected.loc[((hit_selected.index == bgc) & (hit_selected.Start >= start) & (hit_selected.End <= end)),'KnownResistenceHit'] = 'N/A'
         
-        tmp_blast = clusters_blast[(clusters_blast['contig'] == bgc) & (clusters_blast['cluster'] == cluster_number)]
+        if not clusters_blast.empty:
+            tmp_blast = clusters_blast[(clusters_blast['contig'] == bgc) & (clusters_blast['cluster'] == cluster_number)]
+        else:
+            tmp_blast = pd.DataFrame()
+            
         if not tmp_blast.empty:
             row_list = []
             mean_similarities = []
@@ -105,4 +112,4 @@ def run(path):
     df2xlsx(os.path.join(path,'Complete_BGCs_with_Hits.xlsx'), 'Complete BGCs with Hits', hit_selected)
 
 if __name__ == '__main__':
-    run(os.getcwd())
+    run('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/SRR13515398/')
