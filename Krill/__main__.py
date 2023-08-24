@@ -58,18 +58,18 @@ with tqdm(desc='Total Databases Analysis progress in MB',total=total_size,unit='
       db_fastas = list(pathlib.Path(db).glob('*.{}'.format("fasta")))  # List of fasta files
 
       # Display a visual progress bar for the processing of the current database
-      with tqdm(desc='{db} BGCs Analysis'.format(db=os.path.basename(db)),total=len(db_fastas),unit='file',colour='blue',position=1,leave=False) as pbar:
-        # Use multiple threads for the execution of the fasta files
-        with ThreadPoolExecutor(max_workers=args.threads) as executor:
-          # Run AntiSMASH and ARTS
-          result_futures = [executor.submit(run_AntiSMASH_and_ARTS.run, fasta_file, db) for fasta_file in db_fastas]
-          # Update progress bar
-          for future in as_completed(result_futures):
-            try:
-              pbar.update(1)
-              dbar.update(int(future.result()))
-            except Exception as e:
-              cprint.fatal(e,interrupt=False)
+      # with tqdm(desc='{db} BGCs Analysis'.format(db=os.path.basename(db)),total=len(db_fastas),unit='file',colour='blue',position=1,leave=False) as pbar:
+      #   # Use multiple threads for the execution of the fasta files
+      #   with ThreadPoolExecutor(max_workers=args.threads) as executor:
+      #     # Run AntiSMASH and ARTS
+      #     result_futures = [executor.submit(run_AntiSMASH_and_ARTS.run, fasta_file, db) for fasta_file in db_fastas]
+      #     # Update progress bar
+      #     for future in as_completed(result_futures):
+      #       try:
+      #         pbar.update(1)
+      #         dbar.update(int(future.result()))
+      #       except Exception as e:
+      #         cprint.fatal(e,interrupt=False)
 
       cprint.info('# Extracting AntiSMASH and ARTS results...')
       AntiSMASH_extractor.prepare_extraction(db)  # Create a folder for the AntiSMASH extraction

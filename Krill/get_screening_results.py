@@ -94,10 +94,13 @@ def run(path):
     hit_selected['regulatory_genes'] = hit_selected['genes'].str.contains('regulatory',case=False)
     hit_selected = hit_selected[['sample','cluster_number', 'product', 'completeness', 'SMILES', 'Start', 'End', 'Size', 'strand', 'genes', 'regulatory_genes','KnownResistenceHit','CoreHit','BGCs_Hits','BGCs_Hits_Mean_Similarities(%)']]
 
+    hit_selected.to_csv(os.path.join(path,'BGCs_with_Hits.tsv'),sep='\t')
+    
     # hit_selected.to_csv(os.path.join(path,'BGCs_with_Hits.tsv'),sep='\t')
     df2xlsx(os.path.join(path,'BGCs_with_Hits.xlsx'), 'BGCs with Hits', hit_selected)
 
     hit_selected = hit_selected[hit_selected['completeness'] == "Complete"]
+    hit_selected.to_csv(os.path.join(path,'Complete_BGCs_with_Hits.tsv'),sep='\t')
     # hit_selected.to_csv(os.path.join(path,'Complete_BGCs_with_Hits.tsv'),sep='\t')
     df2xlsx(os.path.join(path,'Complete_BGCs_with_Hits.xlsx'), 'Complete BGCs with Hits', hit_selected)
 

@@ -192,11 +192,9 @@ def parse_blast_results_3(jfile):
         with open(jfile) as json_file:
             data = json.load(json_file) 
 
+
         #Lendo a subtabelas       
         for d in data["records"]:
-
-
-
             # Ranking Apenas
             i_file = data["input_file"]
             try:
@@ -251,7 +249,7 @@ def get_clusters_blast(path, threads):
         with ThreadPoolExecutor(max_workers=threads) as executor:
             result_futures = [executor.submit(function, file) for file in ref]
             for future in as_completed(result_futures):
-  
+
               if function == parse_blast_results_1:
                 try:
                   recDf = pd.concat([recDf, future.result()])
@@ -267,11 +265,11 @@ def get_clusters_blast(path, threads):
               elif function == parse_blast_results_3:
                 try:
                   rkgDf = pd.concat([rkgDf, future.result()])
+                  print(rkgDf)
                   pbar.update(1)
                 except Exception as e:
                   cprint.fatal(e,interrupt=False)
        count+=1
-    
     rkgDf = rkgDf.rename(columns={"rkg_modules.antismash.modules.clusterblast.knowncluster.record_id": "record_id"})
     rkgDf = rkgDf.rename(columns={"rkg_modules.antismash.modules.clusterblast.knowncluster.results.region_number": "region_number"})
 
@@ -316,23 +314,23 @@ def get_clusters_blast(path, threads):
         rkgDfFinal = pd.concat([rkgDfFinal, aux[rkg_cols]])
     
     rkgDfFinal.reset_index(drop=True, inplace=True)
-    
-    
-    rkgDfFinal["similarity"] = rkgDfFinal["hits"]*100/rkgDfFinal["bgc_proteins"]
-    rkgDfFinal["similarity"] = rkgDfFinal["similarity"].round(decimals=0)
-    rkgDfFinal = rkgDfFinal[['input_file','record_id','region_number','accession',
-                             'cluster_type','description','blast_score','hits',
-                             'bgc_proteins','similarity']]
-    rkgDfFinal = rkgDfFinal.rename(columns={'input_file': 'ref','record_id':'contig',
-                                'region_number':'cluster'})
-    
-    rkgDfFinal = rkgDfFinal.sort_values(by='similarity', ascending=False)
-    rkgDfFinal = rkgDfFinal.drop_duplicates()
-    
+
+    if rkgDfFinal.empty is False:
+      rkgDfFinal["similarity"] = rkgDfFinal["hits"]*100/rkgDfFinal["bgc_proteins"]
+      rkgDfFinal["similarity"] = rkgDfFinal["similarity"].round(decimals=0)
+      rkgDfFinal = rkgDfFinal[['input_file','record_id','region_number','accession',
+                               'cluster_type','description','blast_score','hits',
+                               'bgc_proteins','similarity']]
+      rkgDfFinal = rkgDfFinal.rename(columns={'input_file': 'ref','record_id':'contig',
+                                  'region_number':'cluster'})
+      
+      rkgDfFinal = rkgDfFinal.sort_values(by='similarity', ascending=False)
+      rkgDfFinal = rkgDfFinal.drop_duplicates()
+      
     rkgDfFinal.to_csv(os.path.join(directory,'clusters_blast.tsv'), sep='\t', index=False)
 
 
 if __name__ == '__main__':
-  path = '/media/bioinfo/6tb_hdd/03_ELLEN/KRILL_TEST/NEW_TEST/Files/'
-  threads = 6
+  path = '/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/SRR13515398/'
+  threads = 2
   get_clusters_blast(path, threads)
