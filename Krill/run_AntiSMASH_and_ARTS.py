@@ -7,7 +7,6 @@ def run(fasta_file, db):
     
     # AntiSMASH
     if not os.path.isdir(os.path.join(db,'AntiSMASH',name)):
-        pass
         subprocess.run(
             'bash {project_dir}/krill_run_antismash.sh {file} {thr} AntiSMASH AntiSMASH/{file_name}'.format(project_dir=project_dir, file=fasta_file, thr=1, file_name=name),
             shell=True,
