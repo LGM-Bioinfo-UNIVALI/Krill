@@ -15,21 +15,41 @@ run_docker_func () {
 }
 
 run_conda_func () {
-    source ~/miniconda3/etc/profile.d/conda.sh && \
-    antismash --cc-mibig --rre --tigrfam \
-    --skip-zip-file \
-    --cb-general \
-    --cb-knownclusters \
-    --cb-subclusters \
-    --asf \
-    --pfam2go \
-    --smcog-trees \
-    --genefinding-tool prodigal-m \
-    --cpus $2 \
-    --output-dir $3 \
-    $1
-}
+    CONDA_MINICONDA_PATH=~/miniconda3/etc/profile.d/conda.sh
+    CONDA_ANACONDA_PATH=~/anaconda3/etc/profile.d/conda.sh
 
+    if [ -e "$CONDA_MINICONDA_PATH" ]; then
+        source "$CONDA_MINICONDA_PATH" && \
+        antismash --cc-mibig --rre --tigrfam \
+        --skip-zip-file \
+        --cb-general \
+        --cb-knownclusters \
+        --cb-subclusters \
+        --asf \
+        --pfam2go \
+        --smcog-trees \
+        --genefinding-tool prodigal-m \
+        --cpus $2 \
+        --output-dir $3 \
+        $1
+    elif [ -e "$CONDA_ANACONDA_PATH" ]; then
+        source "$CONDA_ANACONDA_PATH" && \
+        antismash --cc-mibig --rre --tigrfam \
+        --skip-zip-file \
+        --cb-general \
+        --cb-knownclusters \
+        --cb-subclusters \
+        --asf \
+        --pfam2go \
+        --smcog-trees \
+        --genefinding-tool prodigal-m \
+        --cpus $2 \
+        --output-dir $3 \
+        $1
+    else
+        echo "conda.sh not found in either Miniconda or Anaconda installation directories."
+    fi
+}
 
 if ! command -v docker &> /dev/null; then
     run_conda_func $1 $2 $4
