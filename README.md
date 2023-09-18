@@ -26,6 +26,14 @@ Package Features:
 3. Conda
 4. hmmsearch
 
+Krill also uses the following Python packages:
+1. Pandas
+2. Matplotlib
+3. cprint
+4. Numpy
+5. Biopython
+6. TQDM
+
 ## :dvd: INSTALL
 
 <details><summary>INSTALLING AntiSMASH via Docker</summary>
@@ -77,7 +85,7 @@ conda install -c bioconda antismash
 
 <p>
     
-1. Download environment spec list file from this repository (spec-file.txt)
+1. Download environment spec list file from this repository (arts_specs.txt)
     
 2. Create a conda environment for ARTS using the spec list file
     
@@ -98,7 +106,7 @@ git clone https://bitbucket.org/ziemertlab/arts.git
 
 ## :woman_teacher: PREPARING YOUR FILES
 
-Krill works in a single folder with it's fasta files or in a folder with different Projects MAGs (multiple folders). For this second option, it has to have a [specific folder organization](example/) to start the analysis:
+Krill works in a single folder with fasta files or in a folder with different Projects MAGs (multiple folders). For this second option, it needs to have a [specific folder organization](example/) to start the analysis:
 
 > :warning: DO NOT USE SPACES IN FOLDERS AND FILES NAMES, IT CAN CAUSE ERRORS.
 
