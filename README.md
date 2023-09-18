@@ -36,7 +36,7 @@ Krill also uses the following Python packages:
 5. Biopython
 6. TQDM
 
-## :dvd: INSTALL
+## :dvd: INSTALLATION
 
 <details><summary>INSTALLING AntiSMASH via Docker</summary>
 <p>
