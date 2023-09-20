@@ -36,7 +36,7 @@ def get(path,ext):
 
             if not 'DNABases' in str(t):
                 df['OriginalName'] = df['contig'].str.split('_').str[0].replace(rename[db],regex=True)
-                table_clean = table_clean.append(df)
+                table_clean = pd.concat([table_clean, df], ignore_index=True)
             
             if 'DNABases' in str(t):
                 df[['NT','ORFS']] = df[['NT','ORFS']].astype(int)
@@ -44,7 +44,8 @@ def get(path,ext):
                 bgcs_count = len(list(pathlib.Path(os.path.join(path,db)).rglob('*region*.gbk')))
                 df['BGCs/MegaBases'] = bgcs_count/df['NT']*1000000
                 df['BGCs/MegaORFs'] = bgcs_count/df['ORFS']*1000000
-                countORFsAndDNA = countORFsAndDNA.append(df)
+                # countORFsAndDNA = countORFsAndDNA.append(df)
+                countORFsAndDNA = pd.concat([countORFsAndDNA, df], ignore_index=True)
                 
         if not 'DNABases' in str(f):
             table_clean = table_clean[["Database","OriginalName","contig","cluster_number","product","completeness","SMILES","Start","End","Size","strand","genes","regulatory_genes",'KnownResistenceHit','CoreHit','BGCs_Hits','BGCs_Hits_Mean_Similarities(%)']].sort_values(by='Database')

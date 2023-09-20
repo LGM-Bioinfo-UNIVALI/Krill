@@ -123,7 +123,7 @@ def readTSVCoreHits(tsv):
     df = pd.read_csv(tsv,sep='\t')
     df['Sample'] = str(os.path.basename(os.path.dirname(os.path.dirname(str(tsv)))))
     df.rename(columns={'#Core_gene':'Core_gene'},inplace=True)
-    df['[Hits_listed]'] = df['[Hits_listed]'].str.replace('[','',regex=True).str.replace(']','',regex=True).str.split(';')
+    df['[Hits_listed]'] = df['[Hits_listed]'].str.replace('[','').str.replace(']','').str.split(';')
     df = df.explode('[Hits_listed]')
     df['Contig'] = df['[Hits_listed]'].str.split('|').str[4].str.split('=').str[-1].str.split('_').str[0].astype(int)
     df['Contig'] = df['Sample']+'_'+df['Contig'].astype(str)
@@ -160,7 +160,6 @@ def ARTS_Results_Extraction(path):
     #     print(number_of_samples)
     #     knownResistenceHits = pd.DataFrame(np.nan, index=[i for i in range(0, number_of_samples)], columns=['Model', 'Description', 'Sequence', 'id', 'evalue' , 'bitscore', 'Sample', 'Contig', 'Contig', 'HitStart', 'HitEnd', 'HitStrand'])
     
-
     CoreHits = pd.concat(map(readTSVCoreHits, glob.glob('**/**/coretable.tsv')))
     CoreHits.to_csv(os.path.join(directory,'CoreHits.tsv'),sep='\t',index=False)
     
@@ -171,3 +170,4 @@ if __name__ == '__main__':
     prepare_extraction(os.getcwd())
     ARTS_overview(os.getcwd())
     ARTS_Results_Extraction(os.getcwd())
+  
