@@ -25,8 +25,10 @@ Package Features:
 2. Python 3.X
 3. Conda
 4. hmmsearch
-5. AntiSMASH
-6. ARTS
+5. gawk
+6. parallel
+7. AntiSMASH
+8. ARTS
 
 Krill also uses the following Python packages:
 1. Pandas
