@@ -23,20 +23,34 @@ Package Features:
 ## :electric_plug: PRE-REQUISITES
 1. Ubuntu 20.04
 2. Python 3.X
-3. Conda
-4. hmmsearch
-5. gawk
-6. parallel
-7. AntiSMASH
-8. ARTS
+3. R
+4. Conda
+5. AntiSMASH
+6. ARTS
 
-Krill also uses the following Python packages:
+Ubuntu/Linux packages:
+1. hmmsearch
+2. gawk
+3. parallel
+
+Python packages:
 1. Pandas
 2. Matplotlib
 3. CPRINT
 4. Numpy
 5. Biopython
 6. TQDM
+7. Xlsxwriter
+8. pyScss
+
+R packages:
+1. ggplot2
+2. dplyr
+3. stringr
+4. tidyr
+5. gridExtra
+6. igraph
+7. plotly
 
 ## :dvd: INSTALLATION
 
