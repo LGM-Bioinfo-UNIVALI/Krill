@@ -12,6 +12,25 @@ import pathlib, os
 def get_csvs(path,pattern):
     return list(pathlib.Path(path).glob('**/{}'.format(pattern)))
 
+
+def map_products_to_category(product):
+    replacement_rules = {
+        "PKS I": ["t1pks", "T1PKS"],
+        "PKS other": ["transatpks", "t2pks", "t3pks", "otherks", "hglks", "transAT-PKS", "transAT-PKS-like", "T2PKS", "T3PKS", "PKS-like", "hglE-KS"],
+        "NRPS": ["nrps", "NRPS", "NRPS-like", "thioamide-NRP"],
+        "RiPPs": ["lantipeptide", "thiopeptide", "bacteriocin", "linaridin", "cyanobactin", "glycocin", "LAP", "lassopeptide", "sactipeptide", "bottromycin", "head_to_tail", "microcin", "microviridin", "proteusin", "lanthipeptide", "lipolanthine", "RaS-RiPP", "fungal-RiPP","fungalRiPP", "lanthipeptide-class-iii","lanthipeptide-class-i", "lanthipeptide-class-ii","lanthipeptide-class-iv", "lanthipeptide-class-v", "thioamitides", "ranthipeptide"],
+        "saccharides": ["amglyccycl", "oligosaccharide", "cf_saccharide", "saccharide"],
+        "terpene": "terpene",
+        "others": ["acyl_amino_acids", "arylpolyene", "aminocoumarin", "ectoine", "butyrolactone", "nucleoside", "melanin", "phosphoglycolipid", "phenazine", "phosphonate", "other", "cf_putative", "resorcinol", "indole", "ladderane", "PUFA", "furan", "hserlactone", "fused", "cf_fatty_acid", "siderophore", "blactam", "fatty_acid", "PpyS-KS", "CDPS", "betalactone", "PBDE", "tropodithietic-acid", "NAGGN", "halogenated", "RRE-containing", "redox-cofactor"]
+    }
+    for category, replacements in replacement_rules.items():
+        if isinstance(replacements, str):
+            replacements = [replacements]
+        if product in replacements:
+            return category
+    return 'Unknown'
+
+
 def get(path,ext):
     ref_rename = get_csvs(path,'fastaFilesRenamed.tsv')
     rename = {}
@@ -49,9 +68,12 @@ def get(path,ext):
                 
         if not 'DNABases' in str(f):
             table_clean = table_clean[["Database","OriginalName","contig","cluster_number","product","completeness","SMILES","Start","End","Size","strand","genes","regulatory_genes",'KnownResistenceHit','CoreHit','BGCs_Hits','BGCs_Hits_Mean_Similarities(%)']].sort_values(by='Database')
+            
+            table_clean['product_bigscape'] = table_clean['product'].apply(map_products_to_category)
+            table_clean.insert(table_clean.columns.get_loc('product') + 1, 'product_bigscape', table_clean.pop('product_bigscape'))
             table_clean.to_csv(os.path.join(path,'DBs_'+f),index=False,sep='\t')
         if 'DNABases' in str(f):
             countORFsAndDNA.to_csv(os.path.join(path,'DBs_normalized_info.tsv'),sep='\t')
 
 if __name__ == '__main__':
-    get(os.getcwd(),'.fasta')
+    get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS/AtlanticoNorte/','.fasta')

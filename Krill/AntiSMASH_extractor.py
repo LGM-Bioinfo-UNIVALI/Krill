@@ -265,7 +265,6 @@ def get_clusters_blast(path, threads):
               elif function == parse_blast_results_3:
                 try:
                   rkgDf = pd.concat([rkgDf, future.result()])
-                  print(rkgDf)
                   pbar.update(1)
                 except Exception as e:
                   cprint.fatal(e,interrupt=False)
