@@ -9,7 +9,6 @@ run_docker_func () {
     --cb-subclusters \
     --asf \
     --pfam2go \
-    --smcog-trees \
     --genefinding-tool prodigal-m \
     --cpus $2 
 }
@@ -27,7 +26,6 @@ run_conda_func () {
         --cb-subclusters \
         --asf \
         --pfam2go \
-        --smcog-trees \
         --genefinding-tool prodigal-m \
         --cpus $2 \
         --output-dir $3 \
@@ -41,7 +39,6 @@ run_conda_func () {
         --cb-subclusters \
         --asf \
         --pfam2go \
-        --smcog-trees \
         --genefinding-tool prodigal-m \
         --cpus $2 \
         --output-dir $3 \

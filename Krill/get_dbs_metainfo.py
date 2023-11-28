@@ -76,4 +76,4 @@ def get(path,ext):
             countORFsAndDNA.to_csv(os.path.join(path,'DBs_normalized_info.tsv'),sep='\t')
 
 if __name__ == '__main__':
-    get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS/AtlanticoNorte/','.fasta')
+    get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS/','.fasta')
