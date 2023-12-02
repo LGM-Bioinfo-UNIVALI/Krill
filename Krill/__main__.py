@@ -25,6 +25,7 @@ parser.add_argument('PATH',help='Working path with fasta files',type=str)
 args = parser.parse_args()
 
 
+
 # Get databases (directories) paths if the root directory has them, otherwise work with the root itself
 dbs = []
 for x in os.listdir(args.PATH):
@@ -49,13 +50,15 @@ with tqdm(desc='Total Databases Analysis progress in MB',total=total_size,unit='
   for db in dbs:  # Process each database/directory
 
       os.chdir(db)
-
+    
       if not args.do_not_prepare_fasta_files:
           prepareFastas.run(db,"fasta")  # Rename fasta files, its headers and store changes in a CSV file for control
 
       os.makedirs(os.path.join(db,'AntiSMASH'),exist_ok=True)  # Create ARTS folder
       os.makedirs(os.path.join(db,'ARTS'),exist_ok=True)  # Create ARTS folder
-
+  
+      os.makedirs(os.path.join(db,'ReportOutput'),exist_ok=True)  # Create ARTS folder
+    
       db_fastas = list(pathlib.Path(db).glob('*.{}'.format("fasta")))  # List of fasta files
 
       # Display a visual progress bar for the processing of the current database
@@ -81,15 +84,18 @@ with tqdm(desc='Total Databases Analysis progress in MB',total=total_size,unit='
       
       ARTS_extractor.ARTS_overview(db)
       ARTS_extractor.ARTS_Results_Extraction(db)
-      
+    
 
       cprint.info('# Screening AntiSMASH and ARTS results...')
       get_screening_results.run(db)
 
       cprint.info('# Getting fasta info (Bases and ORFs count)...')
       count_bases_and_ORFs.run(db, "fasta", args.threads)
-
+      
       os.chdir(args.PATH)
+
+
+os.makedirs(os.path.join(args.PATH,'DBsReportOutput'),exist_ok=True)  # Create ARTS folder
 
 cprint.info('# Getting metainfo (Databases MBases, ORFs, BGCs/Mbases and BGCs/ORFs)...')
 get_dbs_metainfo.get(args.PATH, "fasta")

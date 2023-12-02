@@ -9,6 +9,21 @@ import pandas as pd
 import pathlib, os
 
 
+def df2xlsx(path, sheet_name, df):
+    df = df.copy().reset_index(drop=True)
+    writer = pd.ExcelWriter(path, engine='xlsxwriter')
+
+    df.to_excel(writer, sheet_name=sheet_name, startrow=1, header=False, index=False)
+    worksheet = writer.sheets[sheet_name]
+
+    (max_row, max_col) = df.shape
+    column_settings = [{'header': column} for column in df.columns]
+    worksheet.add_table(0, 0, max_row, max_col - 1, {'columns': column_settings})
+    worksheet.set_column(0, max_col - 1, 15)
+
+    writer._save()
+
+
 def get_csvs(path,pattern):
     return list(pathlib.Path(path).glob('**/{}'.format(pattern)))
 
@@ -49,7 +64,8 @@ def get(path,ext):
         countORFsAndDNA = pd.DataFrame()
         
         for t in tables:
-            db = os.path.basename(os.path.dirname(t))
+            # db = os.path.basename(os.path.dirname(t))
+            db = t.parents[1].name
             df = pd.read_csv(t,dtype='object',sep='\t')
             df['Database'] = db
 
@@ -71,9 +87,13 @@ def get(path,ext):
             
             table_clean['product_bigscape'] = table_clean['product'].apply(map_products_to_category)
             table_clean.insert(table_clean.columns.get_loc('product') + 1, 'product_bigscape', table_clean.pop('product_bigscape'))
-            table_clean.to_csv(os.path.join(path,'DBs_'+f),index=False,sep='\t')
+            table_clean.to_csv(os.path.join(path,'DBsReportOutput/DBs_'+f),index=False,sep='\t')
+            f = f.replace('tsv', 'xlsx')
+            df2xlsx(os.path.join(path,'DBsReportOutput/DBs_'+f), 'DBs Report', table_clean)
+
         if 'DNABases' in str(f):
-            countORFsAndDNA.to_csv(os.path.join(path,'DBs_normalized_info.tsv'),sep='\t')
+            countORFsAndDNA.to_csv(os.path.join(path,'DBsReportOutput/DBs_normalized_info.tsv'),sep='\t')
+            df2xlsx(os.path.join(path,'DBsReportOutput/DBs_normalized_info.xlsx'), 'DBs normalized info', countORFsAndDNA)
 
 if __name__ == '__main__':
     get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS/','.fasta')
