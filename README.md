@@ -122,6 +122,21 @@ git clone https://bitbucket.org/ziemertlab/arts.git
     
 </details>
 
+<details><summary>GETTING ARTS REFERENCES</summary>
+
+<p>
+    
+1. Download [Krill's specific ARTS references](https://bitbucket.org/krill-arts-reference/krillartsreference/downloads/) 
+    
+2. Unzip the file
+3. Replace the "reference" folder in ARTS environment with the new one
+
+</p>
+    
+</details>
+
+
+
 ## :woman_teacher: PREPARING YOUR FILES
 
 Krill works in a single folder with fasta files or in a folder with different Projects MAGs (multiple folders). For this second option, it needs to have a [specific folder organization](example/) to start the analysis:
