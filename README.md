@@ -51,6 +51,9 @@ R packages:
 5. gridExtra
 6. igraph
 7. plotly
+8. vegan
+9. reshape2
+10. MASS
 
 ## :dvd: INSTALLATION
 
@@ -121,6 +124,21 @@ git clone https://bitbucket.org/ziemertlab/arts.git
 </p>
     
 </details>
+
+<details><summary>GETTING ARTS REFERENCES</summary>
+
+<p>
+    
+1. Download [Krill's specific ARTS references](https://bitbucket.org/krill-arts-reference/krillartsreference/downloads/) 
+    
+2. Unzip the file
+3. Replace the "reference" folder in ARTS environment with the new one
+
+</p>
+    
+</details>
+
+
 
 ## :woman_teacher: PREPARING YOUR FILES
 
