@@ -51,6 +51,9 @@ R packages:
 5. gridExtra
 6. igraph
 7. plotly
+8. vegan
+9. reshape2
+10. MASS
 
 ## :dvd: INSTALLATION
 
