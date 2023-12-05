@@ -46,7 +46,7 @@ def map_products_to_category(product):
     return 'Unknown'
 
 
-def get(path,ext):
+def get(path, ext, has_multi_db):
     ref_rename = get_csvs(path,'fastaFilesRenamed.tsv')
     rename = {}
     
@@ -65,7 +65,10 @@ def get(path,ext):
         
         for t in tables:
             # db = os.path.basename(os.path.dirname(t))
-            db = t.parents[1].name
+            if has_multi_db:
+                db = t.parents[1].name
+            else:
+                db = os.path.basename(os.path.dirname(t))
             df = pd.read_csv(t,dtype='object',sep='\t')
             df['Database'] = db
 
@@ -96,4 +99,4 @@ def get(path,ext):
             df2xlsx(os.path.join(path,'DBsReportOutput/DBs_normalized_info.xlsx'), 'DBs normalized info', countORFsAndDNA)
 
 if __name__ == '__main__':
-    get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS/','.fasta')
+    get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/ncbi_bioprojects/','.fasta', True)
