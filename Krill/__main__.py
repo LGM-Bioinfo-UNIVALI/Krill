@@ -28,11 +28,9 @@ args = parser.parse_args()
 
 # Get databases (directories) paths if the root directory has them, otherwise work with the root itself
 dbs = []
-has_multi_db = False
 for x in os.listdir(args.PATH):
   if os.path.isdir(os.path.join(args.PATH,x)):
     dbs.append(os.path.join(args.PATH,x))
-    has_multi_db = True
   else:
     dbs.append(args.PATH)
     break
@@ -100,7 +98,7 @@ with tqdm(desc='Total Databases Analysis progress in MB',total=total_size,unit='
 os.makedirs(os.path.join(args.PATH,'DBsReportOutput'),exist_ok=True)  # Create ARTS folder
 
 cprint.info('# Getting metainfo (Databases MBases, ORFs, BGCs/Mbases and BGCs/ORFs)...')
-get_dbs_metainfo.get(args.PATH, "fasta", has_multi_db)
+get_dbs_metainfo.get(args.PATH, "fasta")
 
 cprint.info('# Building charts...')
 build_charts.build_charts(args.PATH)

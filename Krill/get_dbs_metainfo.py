@@ -31,22 +31,41 @@ def get_csvs(path,pattern):
 def map_products_to_category(product):
     replacement_rules = {
         "PKS I": ["t1pks", "T1PKS"],
-        "PKS other": ["transatpks", "t2pks", "t3pks", "otherks", "hglks", "transAT-PKS", "transAT-PKS-like", "T2PKS", "T3PKS", "PKS-like", "hglE-KS"],
-        "NRPS": ["nrps", "NRPS", "NRPS-like", "thioamide-NRP"],
-        "RiPPs": ["lantipeptide", "thiopeptide", "bacteriocin", "linaridin", "cyanobactin", "glycocin", "LAP", "lassopeptide", "sactipeptide", "bottromycin", "head_to_tail", "microcin", "microviridin", "proteusin", "lanthipeptide", "lipolanthine", "RaS-RiPP", "fungal-RiPP","fungalRiPP", "lanthipeptide-class-iii","lanthipeptide-class-i", "lanthipeptide-class-ii","lanthipeptide-class-iv", "lanthipeptide-class-v", "thioamitides", "ranthipeptide"],
+        "PKS other": ["transatpks", "t2pks", "t3pks", "otherks", "hglks", "transAT-PKS", "transAT-PKS-like", "T2PKS", "T3PKS", "PKS-like", "hglE-KS", "prodigiosin"],
+        "NRPS": ["nrps", "NRPS", "NRPS-like", "thioamide-NRP", "NAPAA"],
+        "RiPPs": ["lantipeptide", "thiopeptide", "bacteriocin", "linaridin", "cyanobactin", "glycocin", "LAP", "lassopeptide", "sactipeptide", "bottromycin", "head_to_tail", "microcin", "microviridin", "proteusin", "lanthipeptide", "lipolanthine", "RaS-RiPP", "fungal-RiPP","fungalRiPP", "TfuA-related", "guanidinotides", "RiPP-like", "lanthipeptide-class-iii","lanthipeptide-class-i", "lanthipeptide-class-ii","lanthipeptide-class-iv", "lanthipeptide-class-v", "redox-cofactor", "thioamitides", "ranthipeptide",  "epipeptide", "cyclic-lactone-autoinducer", "spliceotide", "RRE-containing", "crocagin"],
         "saccharides": ["amglyccycl", "oligosaccharide", "cf_saccharide", "saccharide"],
         "terpene": "terpene",
-        "others": ["acyl_amino_acids", "arylpolyene", "aminocoumarin", "ectoine", "butyrolactone", "nucleoside", "melanin", "phosphoglycolipid", "phenazine", "phosphonate", "other", "cf_putative", "resorcinol", "indole", "ladderane", "PUFA", "furan", "hserlactone", "fused", "cf_fatty_acid", "siderophore", "blactam", "fatty_acid", "PpyS-KS", "CDPS", "betalactone", "PBDE", "tropodithietic-acid", "NAGGN", "halogenated", "RRE-containing", "redox-cofactor"]
+        "others": ["acyl_amino_acids", "arylpolyene", "aminocoumarin", "ectoine", "butyrolactone", "nucleoside", "melanin", "phosphoglycolipid", "phenazine", "phosphonate", "other", "cf_putative", "resorcinol", "indole", "ladderane", "PUFA", "furan", "hserlactone", "fused", "cf_fatty_acid", "siderophore", "blactam", "fatty_acid", "PpyS-KS", "CDPS", "betalactone", "PBDE", "tropodithietic-acid", "NAGGN", "halogenated", "pyrrolidine", "mycosporine-like"]
     }
+
     for category, replacements in replacement_rules.items():
-        if isinstance(replacements, str):
-            replacements = [replacements]
         if product in replacements:
             return category
-    return 'Unknown'
+        elif ',' in product:
+            hybrids = product.split(',')
+            count = 0
+            count_nrps = 0
+            count_pksI = 0
+            for hybrid in hybrids:
+                if hybrid in replacement_rules['NRPS']:
+                    count_nrps += 1
+                elif hybrid in replacement_rules["PKS I"]:
+                    count_pksI += 1
+                elif hybrid in replacements:
+                    count += 1
+                elif category == "PKS other" and hybrid in replacement_rules["PKS I"]:
+                    count += 1
+
+            if count_nrps + count_pksI == len(hybrids):
+                return "PKS/NRPS Hybrids"
+            elif count == len(hybrids):
+                return category
+
+    return 'others'
 
 
-def get(path, ext, has_multi_db):
+def get(path, ext):
     ref_rename = get_csvs(path,'fastaFilesRenamed.tsv')
     rename = {}
     
@@ -65,10 +84,8 @@ def get(path, ext, has_multi_db):
         
         for t in tables:
             # db = os.path.basename(os.path.dirname(t))
-            if has_multi_db:
-                db = t.parents[1].name
-            else:
-                db = os.path.basename(os.path.dirname(t))
+            db = t.parents[1].name
+
             df = pd.read_csv(t,dtype='object',sep='\t')
             df['Database'] = db
 
@@ -99,4 +116,4 @@ def get(path, ext, has_multi_db):
             df2xlsx(os.path.join(path,'DBsReportOutput/DBs_normalized_info.xlsx'), 'DBs normalized info', countORFsAndDNA)
 
 if __name__ == '__main__':
-    get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/ncbi_bioprojects/','.fasta', True)
+    get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS_SOIL/soil_forest','.fasta')
