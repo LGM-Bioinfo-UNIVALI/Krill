@@ -26,6 +26,43 @@ def df2xlsx(path, sheet_name, df):
     writer._save()
 
 
+def map_products_to_category(product):
+    replacement_rules = {
+        "PKS I": ["t1pks", "T1PKS"],
+        "PKS other": ["transatpks", "t2pks", "t3pks", "otherks", "hglks", "transAT-PKS", "transAT-PKS-like", "T2PKS", "T3PKS", "PKS-like", "hglE-KS", "prodigiosin"],
+        "NRPS": ["nrps", "NRPS", "NRPS-like", "thioamide-NRP", "NAPAA"],
+        "RiPPs": ["lantipeptide", "thiopeptide", "bacteriocin", "linaridin", "cyanobactin", "glycocin", "LAP", "lassopeptide", "sactipeptide", "bottromycin", "head_to_tail", "microcin", "microviridin", "proteusin", "lanthipeptide", "lipolanthine", "RaS-RiPP", "fungal-RiPP","fungalRiPP", "TfuA-related", "guanidinotides", "RiPP-like", "lanthipeptide-class-iii","lanthipeptide-class-i", "lanthipeptide-class-ii","lanthipeptide-class-iv", "lanthipeptide-class-v", "redox-cofactor", "thioamitides", "ranthipeptide",  "epipeptide", "cyclic-lactone-autoinducer", "spliceotide", "RRE-containing", "crocagin"],
+        "saccharides": ["amglyccycl", "oligosaccharide", "cf_saccharide", "saccharide"],
+        "terpene": "terpene",
+        "others": ["acyl_amino_acids", "arylpolyene", "aminocoumarin", "ectoine", "butyrolactone", "nucleoside", "melanin", "phosphoglycolipid", "phenazine", "phosphonate", "other", "cf_putative", "resorcinol", "indole", "ladderane", "PUFA", "furan", "hserlactone", "fused", "cf_fatty_acid", "siderophore", "blactam", "fatty_acid", "PpyS-KS", "CDPS", "betalactone", "PBDE", "tropodithietic-acid", "NAGGN", "halogenated", "pyrrolidine", "mycosporine-like"]
+    }
+
+    for category, replacements in replacement_rules.items():
+        if product in replacements:
+            return category
+        elif ',' in product:
+            hybrids = product.split(',')
+            count = 0
+            count_nrps = 0
+            count_pksI = 0
+            for hybrid in hybrids:
+                if hybrid in replacement_rules['NRPS']:
+                    count_nrps += 1
+                elif hybrid in replacement_rules["PKS I"]:
+                    count_pksI += 1
+                elif hybrid in replacements:
+                    count += 1
+                elif category == "PKS other" and hybrid in replacement_rules["PKS I"]:
+                    count += 1
+
+            if count_nrps + count_pksI == len(hybrids):
+                return "PKS/NRPS Hybrids"
+            elif count == len(hybrids):
+                return category
+
+    return 'others'
+
+
 def run(path):
     if os.path.exists(os.path.join(path,'ARTS','ARTS_Extractor','KnownHits.tsv')):
         KnownHits = pd.read_csv(os.path.join(path,'ARTS','ARTS_Extractor','KnownHits.tsv'),sep='\t',converters={'Sample':str})
@@ -101,6 +138,9 @@ def run(path):
     hit_selected['regulatory_genes'] = hit_selected['genes'].str.contains('regulatory',case=False)
     hit_selected = hit_selected[['sample','cluster_number', 'product', 'completeness', 'SMILES', 'Start', 'End', 'Size', 'strand', 'genes', 'regulatory_genes','KnownResistenceHit','CoreHit','BGCs_Hits','BGCs_Hits_Mean_Similarities(%)']]
 
+    hit_selected['product_bigscape'] = hit_selected['product'].apply(map_products_to_category)
+    hit_selected.insert(hit_selected.columns.get_loc('product') + 1, 'product_bigscape', hit_selected.pop('product_bigscape'))
+
     hit_selected.to_csv(os.path.join(path,'ReportOutput/BGCs_with_Hits.tsv'),sep='\t')
     
     # hit_selected.to_csv(os.path.join(path,'BGCs_with_Hits.tsv'),sep='\t')
@@ -112,4 +152,4 @@ def run(path):
     df2xlsx(os.path.join(path,'ReportOutput/Complete_BGCs_with_Hits.xlsx'), 'Complete BGCs with Hits', hit_selected)
 
 if __name__ == '__main__':
-    run('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/SRR13515398/')
+    run('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/01_REPORT_DATABASES/KRILL_RESULTS/BlackSeaSequences')
