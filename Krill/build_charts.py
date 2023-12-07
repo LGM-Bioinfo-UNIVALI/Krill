@@ -32,4 +32,4 @@ def build_charts(path):
 
 
 if __name__ == '__main__':
-	build_charts("/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS/AtlanticoSul")
+	build_charts("/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS/")
