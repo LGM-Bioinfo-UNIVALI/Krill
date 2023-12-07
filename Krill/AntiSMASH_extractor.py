@@ -19,6 +19,21 @@ def prepare_extraction(path):
     os.makedirs(directory, exist_ok=True)
 
 
+def df2xlsx(path, sheet_name, df):
+    df = df.copy().reset_index(drop=True)
+    writer = pd.ExcelWriter(path, engine='xlsxwriter')
+
+    df.to_excel(writer, sheet_name=sheet_name, startrow=1, header=False, index=False)
+    worksheet = writer.sheets[sheet_name]
+
+    (max_row, max_col) = df.shape
+    column_settings = [{'header': column} for column in df.columns]
+    worksheet.add_table(0, 0, max_row, max_col - 1, {'columns': column_settings})
+    worksheet.set_column(0, max_col - 1, 15)
+
+    writer._save()
+
+
 def parse_gbk_cand_cluster(file):
 
   clusters = []
@@ -142,6 +157,7 @@ def protocluster_parse(path, threads):
     print('Saving final dataframe into CSV...')
     
     candclusters_df.to_csv(directory+'clusters.tsv', sep='\t', index=False)
+    df2xlsx(directory+'clusters.xlsx', 'clusters', candclusters_df)
 # ==============================================================================
 
 
@@ -327,6 +343,7 @@ def get_clusters_blast(path, threads):
       rkgDfFinal = rkgDfFinal.drop_duplicates()
       
     rkgDfFinal.to_csv(os.path.join(directory,'clusters_blast.tsv'), sep='\t', index=False)
+    df2xlsx(os.path.join(directory,'clusters_blast.xlsx'), 'clusters_blast', rkgDfFinal)
 
 
 if __name__ == '__main__':

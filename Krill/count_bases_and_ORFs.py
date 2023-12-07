@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def df2xlsx(path, sheet_name, df):
-    df = df.copy().reset_index()
+    df = df.copy().reset_index(drop=True)
     writer = pd.ExcelWriter(path, engine='xlsxwriter')
 
     df.to_excel(writer, sheet_name=sheet_name, startrow=1, header=False, index=False)

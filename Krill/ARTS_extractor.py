@@ -19,6 +19,22 @@ def prepare_extraction(path):
     directory = os.path.join(path,'ARTS','ARTS_Extractor')
     os.makedirs(directory, exist_ok=True)
 
+
+def df2xlsx(path, sheet_name, df):
+    df = df.copy().reset_index(drop=True)
+    writer = pd.ExcelWriter(path, engine='xlsxwriter')
+
+    df.to_excel(writer, sheet_name=sheet_name, startrow=1, header=False, index=False)
+    worksheet = writer.sheets[sheet_name]
+
+    (max_row, max_col) = df.shape
+    column_settings = [{'header': column} for column in df.columns]
+    worksheet.add_table(0, 0, max_row, max_col - 1, {'columns': column_settings})
+    worksheet.set_column(0, max_col - 1, 15)
+
+    writer._save()
+
+
 def ARTS_overview(path):
 
     path = os.path.join(path,'ARTS')
@@ -42,30 +58,39 @@ def ARTS_overview(path):
     dup_count = []
     bgc_prox_count = []
     
+    samples = []
     print('Done. Now, time to get informations.')
     
     for file in referencia_fasta:
         file = str(file)
         if "coregenes" not in file:
             base_fasta = str(os.path.basename(file)[:-4])
+            if base_fasta not in samples:
+                samples.append(base_fasta)
             recs = list(SeqIO.parse(file, 'fasta'))
             count_cds = [base_fasta, len(recs)]
             CDS_count.append(count_cds)
         
     for file in referencia_clusters:
         base_clust = str(os.path.basename(file)[:-10])
+        if base_clust not in samples:
+            samples.append(base_clust)
         clust = sum(1 for line in open(file))-1
         count_clust = [base_clust, clust]
         clusters_count.append(count_clust)
     
     for file in referencia_knownhits:
         base_known = str(os.path.abspath(file)).split('/')[-3]
+        if base_known not in samples:
+            samples.append(base_known)
         hits_file = sum(1 for line in open(file))-1
         count_hits = [base_known, hits_file]
         hits_count.append(count_hits)
     
     for file in referencia_coregenes:
         base_core = str(os.path.abspath(file)).split('/')[-3]
+        if base_core not in samples:
+            samples.append(base_core)
         hits_core = sum(1 for line in open(file))-1
         countcore = [base_core, hits_core]
         core_count.append(countcore)
@@ -79,6 +104,8 @@ def ARTS_overview(path):
         
     for file in referencia_duplic:
         base_dup = str(os.path.abspath(file)).split('/')[-3]
+        if base_dup not in samples:
+            samples.append(base_dup)
         dup = sum(1 for line in open(file))-1
         countdup = [base_dup, dup]
         dup_count.append(countdup)
@@ -99,11 +126,25 @@ def ARTS_overview(path):
           '\n\nAll right. Mounting final table...')
     
     data_frames = [CDS_df, clusters_df, hits_df, core_df, dup_df, bgc_prox_df]
-    data_frames = [df.set_index('Sample') for df in data_frames]
-    data_frames = data_frames[0].join(data_frames[1:])
+
+    overview_df = pd.DataFrame(data=samples, columns=['Sample'])
+    for data_frame in data_frames:
+        if data_frame.empty is False:
+            overview_df = overview_df.merge(data_frame, on='Sample')
+        else:
+            for col in data_frame.columns:
+                if col != 'Sample':
+                    data_frame[col] = np.NaN
+                else:
+                    data_frame[col] = samples
+
+            overview_df = overview_df.merge(data_frame, on='Sample')
+
     
-    data_frames.to_csv(os.path.join(directory,'ARTS_overview.tsv'),sep='\t')
+    # data_frames = data_frames[0].join(data_frames[1:])
     
+    overview_df.to_csv(os.path.join(directory,'ARTS_overview.tsv'),sep='\t', index=False)
+    df2xlsx(os.path.join(directory,'ARTS_overview.xlsx'), 'ARTS_overview', overview_df)
     print('Overview Done.\n')
 
 def readTSVKnownHits(tsv):
@@ -155,6 +196,7 @@ def ARTS_Results_Extraction(path):
     if glob.glob('**/**/knownhits.tsv') != []:
         knownResistenceHits = pd.concat(map(readTSVKnownHits, glob.glob('**/**/knownhits.tsv')))
         knownResistenceHits.to_csv(os.path.join(directory,'KnownHits.tsv'),sep='\t',index=False)
+        df2xlsx(os.path.join(directory,'KnownHits.xlsx'), 'KnownHits', knownResistenceHits)
 
     # else:
     #     print(number_of_samples)
@@ -162,12 +204,14 @@ def ARTS_Results_Extraction(path):
     
     CoreHits = pd.concat(map(readTSVCoreHits, glob.glob('**/**/coretable.tsv')))
     CoreHits.to_csv(os.path.join(directory,'CoreHits.tsv'),sep='\t',index=False)
+    df2xlsx(os.path.join(directory,'CoreHits.xlsx'), 'CoreHits', CoreHits)
     
     dupTable = pd.concat(map(readTSVdupTable, glob.glob('**/**/duptable.tsv')))
     dupTable.to_csv(os.path.join(directory,'DupHits.tsv'),sep='\t',index=False)
+    df2xlsx(os.path.join(directory,'DupHits.xlsx'), 'DupHits', dupTable)
 
 if __name__ == '__main__':
-    prepare_extraction(os.getcwd())
-    ARTS_overview(os.getcwd())
-    ARTS_Results_Extraction(os.getcwd())
+    # prepare_extraction(os.getcwd())
+    ARTS_overview('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS/AtlanticoSul/')
+    # ARTS_Results_Extraction(os.getcwd())
   

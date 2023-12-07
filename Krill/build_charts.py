@@ -17,13 +17,17 @@ def build_charts(path):
 	subprocess.run(
 		f'Rscript {project_dir}/Krill_visualizations_with_hybrids.R {input_file_path} {output_dir_hybrids}',
 		shell=True,
-		executable='/bin/bash'
+		executable='/bin/bash',
+		stdout=subprocess.DEVNULL,
+        stderr=subprocess.STDOUT
 	)
 
 	subprocess.run(
 		f'Rscript {project_dir}/Krill_visualizations_without_hybrids.R {input_file_path} {output_dir_no_hybrids}',
 		shell=True,
-		executable='/bin/bash'
+		executable='/bin/bash',
+		stdout=subprocess.DEVNULL,
+        stderr=subprocess.STDOUT
 	)
 
 
