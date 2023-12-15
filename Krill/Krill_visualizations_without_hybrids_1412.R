@@ -10,13 +10,11 @@ library(vegan)
 library(reshape2)
 library(MASS)
 
-
-args <- commandArgs(trailingOnly = TRUE)
-
+###############################################################
+setwd("/home/machenkathebiologist/krill_bioprojects/marine/")
 # Read the TSV file
-BGCs <- read.delim(args[1], stringsAsFactors = T)
+BGCs <- read.delim("/home/machenkathebiologist/krill_bioprojects/marine/Marine_DBs_BGCs_with_Hits.tsv", stringsAsFactors = T)
 
-output_dir <- args[2]
 
 # Extract "Bioproject" and "Source" from the "database" column
 BGCs <- BGCs %>%
@@ -70,12 +68,9 @@ df_BGCs <- BGCs %>%
   mutate(product_copy = product) %>%
   rowwise() %>%
   mutate(product = replace_products(product_copy)) %>%
-  dplyr::select(Source, product, Bioproject, Size) %>%
+  select(Source, product, Bioproject, Size) %>%
   separate_rows(product, sep = ",")
 
-
-# Create a list to store the plots
-plots <- list()
 
 # Create a histogram for each product
 
@@ -91,7 +86,7 @@ for (product in unique(df_BGCs$product)) {
     labs(x = "Size (kb)", y = "Frequency", title = paste("Size Distribution for", product)) +
     theme_minimal() +
     theme(
-      text = element_text(face = "bold", size = 12),
+      text = element_text(family = "Liberation Serif", face = "bold", size = 12),
       plot.title = element_text(hjust = 0.5),
       panel.background = element_rect(fill = "white")
     )
@@ -103,7 +98,8 @@ for (product in unique(df_BGCs$product)) {
 
 # Print each plot separately
 for (product in names(plots)) {
-  ggsave(paste(output_dir, "/", product, "_histogram_size_plot.png", sep=''), plots[[product]], width = 10, height = 6, dpi = 300)
+  print(plots[[product]])
+  ggsave(paste(product, "_histogram_size_plot.png", sep = ""), plots[[product]], width = 10, height = 6, dpi = 300)
 }
 
 
@@ -128,14 +124,15 @@ bar_plot <- ggplot(source_product_counts, aes(x = reorder(product, -Product_Coun
   labs(x = "Product", y = "Count", title = "Product Total Absolute Count") +
   scale_fill_manual(values = color_palette) +  # Define the color palette
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white")
   )
 
 # Display the bar plot and save
+print(bar_plot)
 
-ggsave(paste(output_dir, "/", "product_total_absolute_count_bar_plot.png", sep=''), plot = bar_plot, width = 10, height = 6, dpi = 800)
+ggsave("product_total_absolute_count_bar_plot.png", plot = bar_plot, width = 10, height = 6, dpi = 800)
 
 
 
@@ -181,14 +178,15 @@ bar_graph <- ggplot(product_counts, aes(x = Source, y = Normalized_Percentage, f
   labs(x = "Source", y = "Percentage", title = "Product Percentage by Source") +
   scale_fill_manual(values = custom_colors) +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white")
   ) +
   coord_cartesian(ylim = c(0, 100))   
 
 # Print and save the graph
-ggsave(paste(output_dir, "/", "product_percentage_by_source_stackedbar_plot.png", sep=''), plot = bar_graph, width = 10, height = 6, dpi = 800)
+print(bar_graph)
+ggsave("product_percentage_by_source_stackedbar_plot.png", plot = bar_graph, width = 10, height = 6, dpi = 800)
 
 
 # Heatmap of product count by source
@@ -198,14 +196,15 @@ heatmap_plot <- ggplot(product_counts, aes(x = Source, y = Product_Counts, fill 
   ggtitle("Product Frequency by Source") +
   scale_fill_manual(values = custom_colors) +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white")
   ) +
   coord_cartesian(ylim = c(0, 1000))  # Limit the y-axis to 1000
 
 #Print and save
-ggsave(paste(output_dir, "/", "product_frequecy_by_source_heatmap_plot.png", sep=''), plot = heatmap_plot, width = 10, height = 6, dpi = 800)
+print(heatmap_plot)
+ggsave("product_frequecy_by_source_heatmap_plot.png", plot = heatmap_plot, width = 10, height = 6, dpi = 800)
 
 # Create a bubble plot with product size
 bubble_plot_s <- ggplot(df_BGCs, aes(x = Source, y = Size, size = Size, color = product)) +
@@ -214,33 +213,35 @@ bubble_plot_s <- ggplot(df_BGCs, aes(x = Source, y = Size, size = Size, color = 
   scale_fill_manual(values = custom_colors) +
   ggtitle("Product Size") +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white")
   )
 #Print and save
-ggsave(paste(output_dir, "/", "product_size_by_source_bubble_plot.png", sep=''), plot = bubble_plot_s, width = 10, height = 6, dpi = 800)
+print(bubble_plot_s)
+ggsave("product_size_by_source_bubble_plot.png", plot = bubble_plot_s, width = 10, height = 6, dpi = 800)
 
 # Boxplot of Product Absolute Count by Source
 boxplot_plot_pc <- ggplot(product_counts, aes(x = product, y = Product_Counts, fill = Source)) +
   geom_boxplot(width = 0.7) +  # Adjust the width as needed
   labs(x = "Product", y = "Count", title = "Product Absolute Count by Source") +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white"),
     axis.text.x = element_text(angle = 45, hjust = 1)  ) +
   facet_grid(rows = vars(Source))
 
 # Print and save
-ggsave(paste(output_dir, "/", "product_absolute_count_by_source_box_plot.png", sep=''), plot = boxplot_plot_pc, width = 10, height = 6, dpi = 800)
+print(boxplot_plot_pc)
+ggsave("product_absolute_count_by_source_box_plot.png", plot = boxplot_plot_pc, width = 10, height = 6, dpi = 800)
 
 # Create the boxplot with facet for Bioproject
 boxplot_plot2 <- ggplot(product_counts, aes(x = product, y = Product_Counts, fill = Source)) +
   geom_boxplot() +
   labs(x = "Product", y = "Count", title = "Product Absolute Count by Source and Bioproject") +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white"),
     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
@@ -248,7 +249,8 @@ boxplot_plot2 <- ggplot(product_counts, aes(x = product, y = Product_Counts, fil
   facet_grid(rows = vars(Bioproject))  # Facet for Bioproject
 
 # Print and save
-ggsave(paste(output_dir, "/", "product_absolute_count_by_source_and_bioproject_box_plot.png", sep=''), plot = boxplot_plot2, width = 10, height = 6, dpi = 300)
+print(boxplot_plot2)
+ggsave("product_absolute_count_by_source_and_bioproject_box_plot.png", plot = boxplot_plot2, width = 10, height = 6, dpi = 300)
 
 
 # Create a Boxplot for Product Size 
@@ -256,7 +258,7 @@ boxplot_plot_ps <- ggplot(df_BGCs, aes(x = product, y = Size, fill = Source)) +
   geom_boxplot() +
   labs(x = "Product", y = "Size (kb)", title = "Product Size by Source") +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white"),
     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
@@ -264,14 +266,15 @@ boxplot_plot_ps <- ggplot(df_BGCs, aes(x = product, y = Size, fill = Source)) +
 
 
 # Print and save
-ggsave(paste(output_dir, "/", "product_size_by_source_box_plot.png", sep=''), plot = boxplot_plot_ps, width = 10, height = 6, dpi = 800)
+print(boxplot_plot_ps)
+ggsave("product_size_by_source_box_plot.png", plot = boxplot_plot_ps, width = 10, height = 6, dpi = 800)
 
 # Create the boxplot with facet for Bioproject
 boxplot_plot2s <- ggplot(df_BGCs, aes(x = product, y = Size, fill = Bioproject)) +
   geom_boxplot() +
   labs(x = "Product", y = "Size (kb)", title = "Product Size by Source and Bioproject") +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white"),
     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
@@ -279,28 +282,30 @@ boxplot_plot2s <- ggplot(df_BGCs, aes(x = product, y = Size, fill = Bioproject))
   facet_grid(rows = vars(Bioproject))  # Facet for Bioproject
 
 # Print and save
-ggsave(paste(output_dir, "/", "product_size_by_source_and_bioproject_box_plot.png", sep=''), plot = boxplot_plot2s, width = 10, height = 6, dpi = 300)
+print(boxplot_plot2s)
+ggsave("product_size_by_source_and_bioproject_box_plot.png", plot = boxplot_plot2s, width = 10, height = 6, dpi = 300)
 
 # Create the boxplot for  Product Percentage by Source
 boxplot_plot_p <- ggplot(product_counts, aes(x = product, y = Percentage, fill = Source)) +
   geom_boxplot() +
   labs(x = "Product", y = "Percentage", title = "Product Percentage by Source") +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     axis.text.x = element_text(angle = 45, hjust = 1),
     panel.background = element_rect(fill = "white")# Rotate x-axis labels for better readability
   )
 
 # Print and save
-ggsave(paste(output_dir, "/", "product_percentage_by_source_box_plot.png", sep=''), plot = boxplot_plot_p, width = 12, height = 6, dpi = 300)
+print(boxplot_plot_p)
+ggsave("product_percentage_by_source_box_plot.png", plot = boxplot_plot_p, width = 12, height = 6, dpi = 300)
 
 # Create the boxplot with facet for Bioproject
 boxplot_plot2p <- ggplot(product_counts, aes(x = product, y = Percentage, fill = Source)) +
   geom_boxplot() +
   labs(x = "Product", y = "Percentage", title = "Product Percentage by Source and Bioproject") +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     axis.text.x = element_text(angle = 45, hjust = 1),  
     panel.background = element_rect(fill = "white")# Rotate x-axis labels for better readability
@@ -308,7 +313,8 @@ boxplot_plot2p <- ggplot(product_counts, aes(x = product, y = Percentage, fill =
   facet_grid(rows = vars(Bioproject))  # Facet for Bioproject
 
 # Print and save
-ggsave(paste(output_dir, "/", "product_percentage_by_source_and_bioproject_box_plot.png", sep=''), plot = boxplot_plot2p, width = 12, height = 6, dpi = 800)
+print(boxplot_plot2p)
+ggsave("product_percentage_by_source_and_bioproject_box_plot.png", plot = boxplot_plot2p, width = 12, height = 6, dpi = 800)
 
 # Create the bubble plot with Product size by Source and Bioproject
 bubble_plot_c <- ggplot(df_BGCs, aes(x = product, y = Source, size = Size, color = product)) +
@@ -316,14 +322,15 @@ bubble_plot_c <- ggplot(df_BGCs, aes(x = product, y = Source, size = Size, color
   labs(x = "Product", y = "Source", title = "Product Size (kb) by Source and Bioproject") +
   scale_size_continuous(range = c(3, 15)) +  # Set the range of bubble sizes
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white")
   ) +
   facet_grid(Bioproject ~ ., scales = "free_y")  # Create facets for each Bioproject
 
 # Print and save
-ggsave(paste(output_dir, "/", "product_size_by_source_and_bioproject_box_plot.png", sep=''), plot = boxplot_plot2s, width = 10, height = 6, dpi = 300)
+print(bubble_plot_c)
+ggsave("product_size_by_source_and_bioproject_box_plot.png", plot = boxplot_plot2s, width = 10, height = 6, dpi = 300)
 
 
 # Create the bubble plot with Product Absolute Count by Source 
@@ -333,12 +340,13 @@ bubble_plot_p <- ggplot(product_counts, aes(x = product, y = Source, size = Prod
   scale_size_continuous(range = c(3, 15)) +  # Set the range of bubble sizes
   scale_fill_manual(values = custom_colors) +
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white")
   ) 
 # Print and save
-ggsave(paste(output_dir, "/", "product_absolute_count_by_source_bubble_plot.png", sep=''), plot = bubble_plot_p, width = 12, height = 6, dpi = 800)
+print(bubble_plot_p)
+ggsave("product_absolute_count_by_source_bubble_plot.png", plot = bubble_plot_p, width = 12, height = 6, dpi = 800)
 
 # Create the heatmap for each product by Source
 heatmap_plot_c <- ggplot(product_counts, aes(x = product, y = Source, fill = Product_Counts)) +
@@ -346,13 +354,14 @@ heatmap_plot_c <- ggplot(product_counts, aes(x = product, y = Source, fill = Pro
   labs(x = "Product", y = "Source", title = "Product Absolute Count by Source") +
   scale_fill_viridis_c(name = "Product Count") +  # Add color scale as percentage
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white"),
     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
   )
 # Print and save
-ggsave(paste(output_dir, "/", "product_absolute_count_by_source_heatmap_plot.png", sep=''), plot = heatmap_plot_c, width = 12, height = 6, dpi = 800)
+print(heatmap_plot_c)
+ggsave("product_absolute_count_by_source_heatmap_plot.png", plot = heatmap_plot_c, width = 12, height = 6, dpi = 800)
 
 # Convert 'bioproject' to a factor
 product_counts$Bioproject <- factor(product_counts$Bioproject)
@@ -363,13 +372,14 @@ heatmap_plot_biop <- ggplot(product_counts, aes(x = product, y = Bioproject, fil
   labs(x = "Product", y = "Bioproject", title = "Product Absolute Count by Bioproject") +
   scale_fill_viridis_c(name = "Count") + ##if percentage, label = scales::percent_format(scale = 1)) 
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
 # Print and save 
-ggsave(paste(output_dir, "/", "product_absolute_count_by_bioproject_heatmap_plot.png", sep=''), plot = heatmap_plot_biop, width = 12, height = 6, dpi = 300)
+print(heatmap_plot_biop)
+ggsave("product_absolute_count_by_bioproject_heatmap_plot.png", plot = heatmap_plot_biop, width = 12, height = 6, dpi = 300)
 
 # Create the pie chart by Percentage
 pie_chart_percentage <- ggplot(product_counts, aes(x = "", y = Normalized_Percentage, fill = product)) +
@@ -379,13 +389,14 @@ pie_chart_percentage <- ggplot(product_counts, aes(x = "", y = Normalized_Percen
   coord_polar(theta = "y") +  # Use polar coordinates
   scale_fill_manual(values = rainbow(length(unique(product_counts$product)))) +  # Color each product differently
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white"),
     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
   )
 # Print and save
-ggsave(paste(output_dir, "/", "product_percentage_by_source_pie_plot.png", sep=''), plot = pie_chart_percentage, width = 12, height = 6, dpi = 300)
+print(pie_chart_percentage)
+ggsave("product_percentage_by_source_pie_plot.png", plot = pie_chart_percentage, width = 12, height = 6, dpi = 300)
 
 # Create the pie chart by Product_Counts
 pie_chart_counts_absolute <- ggplot(product_counts, aes(x = "", y = Product_Counts, fill = product)) +
@@ -395,13 +406,14 @@ pie_chart_counts_absolute <- ggplot(product_counts, aes(x = "", y = Product_Coun
   coord_polar(theta = "y") +  # Use polar coordinates
   scale_fill_manual(values = rainbow(length(unique(product_counts$product)))) +  # Color each product differently
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white"),
     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
   )
 # Print and save
-ggsave(paste(output_dir, "/", "product_absolute_counts_by_source_pie_plot.png", sep=''), plot = pie_chart_counts_absolute, width = 12, height = 6, dpi = 800)
+print(pie_chart_counts_absolute)
+ggsave("product_absolute_counts_by_source_pie_plot.png", plot = pie_chart_counts_absolute, width = 12, height = 6, dpi = 800)
 
 
 # Create the pie chart by Size
@@ -412,64 +424,64 @@ pie_chart_s <- ggplot(df_BGCs, aes(x = "", y = Size, fill = product)) +
   coord_polar(theta = "y") +  # Use polar coordinates
   scale_fill_manual(values = rainbow(length(unique(product_counts$product)))) +  # Color each product differently
   theme(
-    text = element_text(face = "bold", size = 12),
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
     panel.background = element_rect(fill = "white"))
 
 # Print and save
-ggsave(paste(output_dir, "/", "product_size_by_source_pie_plot.png", sep=''), plot = pie_chart_s, width = 12, height = 6, dpi = 800)
+print(pie_chart_s)
+ggsave("product_size_by_source_pie_plot.png", plot = pie_chart_s, width = 12, height = 6, dpi = 800)
 
 ####PCoA plot based on product occurrence by source
 # Calculate the pairwise Euclidean distances between factors
 dist_matrix <- dist(as.matrix(xtabs(Product_Counts ~ Source, product_counts)))
-if (nrow(as.matrix(dist_matrix)) > 1 && ncol(as.matrix(dist_matrix)) > 1) {
 
-  # Perform Principal Coordinate Analysis (PCoA)
-  pcoa_result <- cmdscale(dist_matrix, k = 1)
+# Perform Principal Coordinate Analysis (PCoA)
+pcoa_result <- cmdscale(dist_matrix, k = 1)
 
-  # Convert the result to a dataframe
-  pcoa_data <- data.frame(PC1 = pcoa_result[, 1], PC2 = pcoa_result[, 1], product = rownames(pcoa_result))
+# Convert the result to a dataframe
+pcoa_data <- data.frame(PC1 = pcoa_result[, 1], PC2 = pcoa_result[, 1], product = rownames(pcoa_result))
 
-  # Plot the PCoA graph
-  pcoa_plot <- ggplot(pcoa_data, aes(x = PC1, y = PC2, color = product)) +
-    geom_point(size = 3) +
-    labs(title = "Principal Coordinate Analysis (PCoA) based on product occurrence between sources",
-         x = "PC1", y = "PC2", color = "Source") +
-    theme(
-      text = element_text(face = "bold", size = 12),
-      plot.title = element_text(hjust = 0.5),
-      panel.background = element_rect(fill = "white"),
-      axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
-    )
-  # Print and save
-  ggsave(paste(output_dir, "/", "PCOA_product_count_plot_by_source.png", sep=''), plot = pcoa_plot, width = 12, height = 6, dpi = 800)
-}
+# Plot the PCoA graph
+pcoa_plot <- ggplot(pcoa_data, aes(x = PC1, y = PC2, color = product)) +
+  geom_point(size = 3) +
+  labs(title = "Principal Coordinate Analysis (PCoA) based on product occurrence between sources",
+       x = "PC1", y = "PC2", color = "Source") +
+  theme(
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_rect(fill = "white"),
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
+  )
+# Print and save
+print(pcoa_plot)
+ggsave("PCOA_product_count_plot_by_source.png", plot = pcoa_plot, width = 12, height = 6, dpi = 800)
 ####PCoA plot based on product occurrence between products
 # Calculate the pairwise Euclidean distances between factors
 dist_matrix <- dist(as.matrix(xtabs(Percentage ~ product, product_counts)))
 
-if (nrow(as.matrix(dist_matrix)) > 1 && ncol(as.matrix(dist_matrix)) > 1) {
-  # Perform Principal Coordinate Analysis (PCoA)
-  pcoa_result <- cmdscale(dist_matrix, k = 2)
+# Perform Principal Coordinate Analysis (PCoA)
+pcoa_result <- cmdscale(dist_matrix, k = 2)
 
-  # Convert the result to a dataframe
-  pcoa_data <- data.frame(PC1 = pcoa_result[, 1], PC2 = pcoa_result[, 2], product = rownames(pcoa_result))
+# Convert the result to a dataframe
+pcoa_data <- data.frame(PC1 = pcoa_result[, 1], PC2 = pcoa_result[, 2], product = rownames(pcoa_result))
 
-  # Plot the PCoA graph
-  pcoa_plot <- ggplot(pcoa_data, aes(x = PC1, y = PC2, color = product)) +
-    geom_point(size = 3) +
-    labs(title = "Principal Coordinate Analysis (PCoA) based on product occurrence between samples",
-         x = "PC1", y = "PC2", color = "Product") +
-    theme(
-      text = element_text(face = "bold", size = 12),
-      plot.title = element_text(hjust = 0.5),
-      panel.background = element_rect(fill = "white"),
-      axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
-    )+
-    stat_ellipse(aes(group = product), geom = "path", color = "red", linetype = "dashed", linewidth = 1)
+# Plot the PCoA graph
+pcoa_plot <- ggplot(pcoa_data, aes(x = PC1, y = PC2, color = product)) +
+  geom_point(size = 3) +
+  labs(title = "Principal Coordinate Analysis (PCoA) based on product occurrence between samples",
+       x = "PC1", y = "PC2", color = "Product") +
+  theme(
+    text = element_text(family = "Liberation Serif", face = "bold", size = 12),
+    plot.title = element_text(hjust = 0.5),
+    panel.background = element_rect(fill = "white"),
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for better readability
+  )+
+  stat_ellipse(aes(group = product), geom = "path", color = "red", linetype = "dashed", linewidth = 1)
 
 
-  # Print and save
-  ggsave(paste(output_dir, "/", "PCOA_product_count.png", sep=''), plot = pcoa_plot, width = 12, height = 6, dpi = 800)
-}
+# Print and save
+print(pcoa_plot)
+ggsave("PCOA_product_count.png", plot = pcoa_plot, width = 12, height = 6, dpi = 800)
+
 

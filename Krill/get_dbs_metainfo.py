@@ -65,7 +65,7 @@ def map_products_to_category(product):
     return 'others'
 
 
-def get(path, ext):
+def get(path, ext, root_database):
     ref_rename = get_csvs(path,'fastaFilesRenamed.tsv')
     rename = {}
     
@@ -89,17 +89,28 @@ def get(path, ext):
             df = pd.read_csv(t,dtype='object',sep='\t')
             df['Database'] = db
 
+
+
             if not 'DNABases' in str(t):
                 df['OriginalName'] = df['contig'].str.split('_').str[0].replace(rename[db],regex=True)
                 table_clean = pd.concat([table_clean, df], ignore_index=True)
-            
+
             if 'DNABases' in str(t):
-                df[['NT','ORFS']] = df[['NT','ORFS']].astype(int)
-                df = df.groupby('Database').sum()
-                bgcs_count = len(list(pathlib.Path(os.path.join(path,db)).rglob('*region*.gbk')))
-                df['BGCs/MegaBases'] = bgcs_count/df['NT']*1000000
+                df['NT (KB)'] = df['NT (KB)'].astype(float)
+                df[['CONTIGS', 'ORFS']] = df[['CONTIGS', 'ORFS']].astype(int)
+                df[['FILE SIZE (MB)', 'MIN LEN (KB)','MAX LEN (KB)', 'AVG LEN (KB)']] = df[['FILE SIZE (MB)', 'MIN LEN (KB)','MAX LEN (KB)', 'AVG LEN (KB)']].astype(float)
+                # df = df.groupby('Database').sum()
+                df = df.groupby('Database').agg({'FILE SIZE (MB)': 'sum', 'NT (KB)': 'sum', 'ORFS': 'sum', 'CONTIGS': 'sum', 'MIN LEN (KB)': 'min', 'MAX LEN (KB)': 'max', 'AVG LEN (KB)': 'mean'})
+                df = df.reset_index()
+                if root_database is False:
+                    bgcs_count = len(list(pathlib.Path(os.path.join(path,db)).rglob('*region*.gbk')))
+                else:
+                    bgcs_count = len(list(pathlib.Path(path).rglob('*region*.gbk')))
+                nt = df['NT (KB)']*1000
+                df['BGCs/MegaBases'] = bgcs_count/nt*1000000
                 df['BGCs/MegaORFs'] = bgcs_count/df['ORFS']*1000000
                 # countORFsAndDNA = countORFsAndDNA.append(df)
+
                 countORFsAndDNA = pd.concat([countORFsAndDNA, df], ignore_index=True)
                 
         if not 'DNABases' in str(f):
@@ -116,4 +127,4 @@ def get(path, ext):
             df2xlsx(os.path.join(path,'DBsReportOutput/DBs_normalized_info.xlsx'), 'DBs normalized info', countORFsAndDNA)
 
 if __name__ == '__main__':
-    get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS_SOIL/soil_forest','.fasta')
+    get('/media/bioinfo/6tb_hdd/03_ELLEN/krill_runs/NCBI_PROJECTS/','.fasta')

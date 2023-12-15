@@ -43,7 +43,7 @@ for (product_bigscape in unique(df_BGCs$product_bigscape)) {
   # Create the histogram for the current product
   plot <- ggplot(product_data, aes(x = Size, fill = product_bigscape)) +
     geom_histogram(binwidth = 1000, color = "black", alpha = 0.7) +
-    labs(x = "Size", y = "Frequency", title = paste("Size Distribution for", product_bigscape)) +
+    labs(x = "Size (kb)", y = "Frequency", title = paste("Size Distribution for", product_bigscape)) +
     theme_minimal() +
     theme(
       text = element_text(face = "bold", size = 12),
@@ -164,7 +164,7 @@ ggsave(paste(output_dir, "/", "product_frequency_by_source_heatmap_plot.png", se
 # Create a bubble plot with product size
 bubble_plot_s <- ggplot(df_BGCs, aes(x = Source, y = Size, size = Size, color = product_bigscape)) +
   geom_point() +
-  labs(x = "Source", y = "Size", size = "Size", color = "Product") +
+  labs(x = "Source", y = "Size (kb)", size = "Size", color = "Product") +
   scale_fill_manual(values = custom_colors) +
   ggtitle("Product Size") +
   theme(
@@ -208,7 +208,7 @@ ggsave(paste(output_dir, "/", "product_absolute_count_by_source_and_bioproject_b
 # Create a Boxplot for Product Size 
 boxplot_plot_ps <- ggplot(df_BGCs, aes(x = product_bigscape, y = Size, fill = Source)) +
   geom_boxplot() +
-  labs(x = "Product", y = "Size", title = "Product Size by Source") +
+  labs(x = "Product", y = "Size (kb)", title = "Product Size by Source") +
   theme(
     text = element_text(face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
@@ -223,7 +223,7 @@ ggsave(paste(output_dir, "/", "product_size_by_source_box_plot.png", sep=''), pl
 # Create the boxplot with facet for Bioproject
 boxplot_plot2s <- ggplot(df_BGCs, aes(x = product_bigscape, y = Size, fill = Bioproject)) +
   geom_boxplot() +
-  labs(x = "Product", y = "Size", title = "Product Size by Source and Bioproject") +
+  labs(x = "Product", y = "Size (kb)", title = "Product Size by Source and Bioproject") +
   theme(
     text = element_text(face = "bold", size = 12),
     plot.title = element_text(hjust = 0.5),
@@ -267,7 +267,7 @@ ggsave(paste(output_dir, "/", "product_percentage_by_source_and_bioproject_box_p
 # Create the bubble plot with Product size by Source and Bioproject
 bubble_plot_c <- ggplot(df_BGCs, aes(x = product_bigscape, y = Source, size = Size, color = product_bigscape)) +
   geom_point(alpha = 0.7) +
-  labs(x = "Product", y = "Source", title = "Product Size by Source and Bioproject") +
+  labs(x = "Product", y = "Source", title = "Product Size (kb) by Source and Bioproject") +
   scale_size_continuous(range = c(3, 15)) +  # Set the range of bubble sizes
   theme(
     text = element_text(face = "bold", size = 12),
@@ -362,7 +362,7 @@ ggsave(paste(output_dir, "/", "product_absolute_counts_by_source_pie_plot.png", 
 pie_chart_s <- ggplot(df_BGCs, aes(x = "", y = Size, fill = product_bigscape)) +
   geom_bar(stat = "identity", width = 1) +
   facet_wrap(~Source) +  # Facet by Source
-  labs(x = NULL, y = NULL, title = "Product Size by Source") +  # Remove axis labels
+  labs(x = NULL, y = NULL, title = "Product Size (kb) by Source") +  # Remove axis labels
   coord_polar(theta = "y") +  # Use polar coordinates
   scale_fill_manual(values = rainbow(length(unique(product_counts$product_bigscape)))) +  # Color each product differently
   theme(
