@@ -32,6 +32,7 @@ Ubuntu/Linux packages:
 1. hmmsearch
 2. gawk
 3. parallel
+4. seqkit
 
 Python packages:
 1. Pandas
